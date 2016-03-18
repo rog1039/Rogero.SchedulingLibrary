@@ -11,12 +11,15 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rogero.SchedulingLibrary.Dn
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rogero.SchedulingLibrary.Uwp", "Rogero.SchedulingLibrary.Uwp\Rogero.SchedulingLibrary.Uwp.csproj", "{996191A7-BDA7-4BA0-8A98-243EBD1CF9CB}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rogero.SchedulingLibrary.Portable", "Rogero.SchedulingLibrary.Portable\Rogero.SchedulingLibrary.Portable.csproj", "{C0B1AD4B-4D76-493D-92AD-C5C3BC8EDD15}"
+EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
 		Rogero.SchedulingLibrary\Rogero.SchedulingLibrary.projitems*{6d086152-3664-4689-b652-83502422eb26}*SharedItemsImports = 4
 		Rogero.SchedulingLibrary\Rogero.SchedulingLibrary.projitems*{996191a7-bda7-4ba0-8a98-243ebd1cf9cb}*SharedItemsImports = 4
 		Rogero.SchedulingLibrary\Rogero.SchedulingLibrary.projitems*{50de5589-9e75-4f49-aac2-dfce79edd8c7}*SharedItemsImports = 4
 		Rogero.SchedulingLibrary\Rogero.SchedulingLibrary.projitems*{b9a8f606-644f-475b-bff3-c8855c068de6}*SharedItemsImports = 13
+		Rogero.SchedulingLibrary\Rogero.SchedulingLibrary.projitems*{c0b1ad4b-4d76-493d-92ad-c5c3bc8edd15}*SharedItemsImports = 4
 	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -77,6 +80,22 @@ Global
 		{996191A7-BDA7-4BA0-8A98-243EBD1CF9CB}.Release|x64.Build.0 = Release|x64
 		{996191A7-BDA7-4BA0-8A98-243EBD1CF9CB}.Release|x86.ActiveCfg = Release|x86
 		{996191A7-BDA7-4BA0-8A98-243EBD1CF9CB}.Release|x86.Build.0 = Release|x86
+		{C0B1AD4B-4D76-493D-92AD-C5C3BC8EDD15}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C0B1AD4B-4D76-493D-92AD-C5C3BC8EDD15}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C0B1AD4B-4D76-493D-92AD-C5C3BC8EDD15}.Debug|ARM.ActiveCfg = Debug|Any CPU
+		{C0B1AD4B-4D76-493D-92AD-C5C3BC8EDD15}.Debug|ARM.Build.0 = Debug|Any CPU
+		{C0B1AD4B-4D76-493D-92AD-C5C3BC8EDD15}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{C0B1AD4B-4D76-493D-92AD-C5C3BC8EDD15}.Debug|x64.Build.0 = Debug|Any CPU
+		{C0B1AD4B-4D76-493D-92AD-C5C3BC8EDD15}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{C0B1AD4B-4D76-493D-92AD-C5C3BC8EDD15}.Debug|x86.Build.0 = Debug|Any CPU
+		{C0B1AD4B-4D76-493D-92AD-C5C3BC8EDD15}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C0B1AD4B-4D76-493D-92AD-C5C3BC8EDD15}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C0B1AD4B-4D76-493D-92AD-C5C3BC8EDD15}.Release|ARM.ActiveCfg = Release|Any CPU
+		{C0B1AD4B-4D76-493D-92AD-C5C3BC8EDD15}.Release|ARM.Build.0 = Release|Any CPU
+		{C0B1AD4B-4D76-493D-92AD-C5C3BC8EDD15}.Release|x64.ActiveCfg = Release|Any CPU
+		{C0B1AD4B-4D76-493D-92AD-C5C3BC8EDD15}.Release|x64.Build.0 = Release|Any CPU
+		{C0B1AD4B-4D76-493D-92AD-C5C3BC8EDD15}.Release|x86.ActiveCfg = Release|Any CPU
+		{C0B1AD4B-4D76-493D-92AD-C5C3BC8EDD15}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
