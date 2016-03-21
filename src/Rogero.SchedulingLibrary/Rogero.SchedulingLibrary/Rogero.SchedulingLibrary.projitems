@@ -9,6 +9,8 @@
     <Import_RootNamespace>Rogero.SchedulingLibrary</Import_RootNamespace>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="$(MSBuildThisFileDirectory)Class1.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)CronScheduler.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)CronTemplate.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)CronTemplateBuilder.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)CronTime.cs" />

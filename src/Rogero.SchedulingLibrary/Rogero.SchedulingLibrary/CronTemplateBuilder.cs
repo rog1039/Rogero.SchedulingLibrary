@@ -61,7 +61,7 @@ namespace Rogero.SchedulingLibrary
         public CronTemplateBuilder WithMonths(params int[] months)
         {
             ArrayMustHaveLengthGreaterThanZero(months);
-            DaysOfWeek = new List<int>(months);
+            Months = new List<int>(months);
             return this;
         }
 
