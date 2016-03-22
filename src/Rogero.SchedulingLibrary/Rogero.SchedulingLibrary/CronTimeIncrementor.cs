@@ -8,7 +8,9 @@ namespace Rogero.SchedulingLibrary
     {
         public static CronTime Increment(CronTime cronTime)
         {
-            //cronTime = ConvertIncomingCronTimeToValidCronTime(cronTime);
+            var conversionResult = ToValidCronTime(cronTime);
+            if (conversionResult.AlreadyValid) return conversionResult.CronTime;
+
             var minuteResult = IncrementList(cronTime.Time.Minute, cronTime.CronTemplate.Minutes);
             if (minuteResult.NoOverflow)
                 return cronTime.ChangeMinute(minuteResult.Value);
@@ -37,140 +39,73 @@ namespace Rogero.SchedulingLibrary
 
         public static CronTime ConvertIncomingCronTimeToValidCronTime(CronTime cronTime)
         {
-            var template = cronTime.CronTemplate;
-            var time = cronTime.Time;
-
-            //var analysisResult = AnalyzeCronTime(cronTime);
-            //if (analysisResult.MonthAnalysis == IntInListAnalysisResult.After)
-            //    return new CronTime(template, time.ChangeYear(time.Year + 1, template));
-
             return null;
-
-            //if (time.Month > template.Months.Last())
-            //    return new CronTime(template, time.ChangeYear(time.Year + 1, template));
-            //if (time.Day > template.DaysOfMonth.Last())
-            //{
-            //    var dayResult = IncrementList(cronTime.Time.Day, cronTime.CronTemplate.DaysOfMonth);
-
-            //    return new CronTime(template, time.ChangeMonth(template.DaysOfMonth.First(), template));
-            //}
-
-
-
-
-
-            //if (time.Month > template.Months.Last())
-            //    return new CronTime(template, time.ChangeYear(time.Year+1, template));
-            //if (time.Day > template.DaysOfMonth.Last())
-            //    return new CronTime(template, time.ChangeMonth(template.DaysOfMonth.First(), template));
-            //if(time.Hour > template.Hours.Last())
-            //    return new CronTime(template, time.ChangeHour(template.Hours.First(), template));
-            //if(time.Minute > template.Minutes.Last())
-            //    return new CronTime(template, time.ChangeMinute(template.Minutes.First(), template));
-
-            //var dayResult = IncrementList(time.Day, template.DaysOfMonth);
-            //if (dayResult.Overflow) return new CronTime(template, time.ChangeDay(dayResult.Value, template));
-
-            //var hourResult = IncrementList(time.Hour, template.Hours);
-            //if(hourResult.Overflow) return 
-
-            //var minuteResult = IncrementList(time.Minute, template.Minutes);
-            //var hourResult = IncrementList(time.Hour+overflowToInt(minuteResult.Overflow), template.Hours);
-
-            ////minute = template.Minutes.ClosestLowerIndexOf(time.Minute) < 0 ? template.Minutes.First() : time.Minute;
-            //minute = minuteResult.Value;
-            //hour = template.Hours.IndexOf(time.Hour) < 0 ? template.Hours.First() : time.Hour;
-            //day = template.DaysOfMonth.IndexOf(time.Day) < 0 ? template.DaysOfMonth.First() : time.Day;
-            //month = template.Months.IndexOf(time.Month) < 0 ? template.Months.First() : time.Month;
-
-            //return new CronTime(template, new Time(minute, hour, day, month, time.Year));
         }
+        
 
-        //private static CronTimeAnalysisResult AnalyzeCronTime(CronTime cronTime)
-        //{
-        //    var time = cronTime.Time;
-        //    var template = cronTime.CronTemplate;
-
-        //    var minuteResult = AnalyzeIntInLst(time.Minute, template.Minutes);
-        //    var hourResult = AnalyzeIntInLst(time.Hour, template.Hours);
-        //    var dayResult = AnalyzeIntInLst(time.Day, template.DaysOfMonth);
-        //    var monthResult = AnalyzeIntInLst(time.Month, template.Months);
-
-        //    var result = new CronTimeAnalysisResult(minuteResult, hourResult, dayResult, monthResult);
-        //    return null;
-        //}
-
-        //private static IntInListAnalysisResult AnalyzeIntInLst(int number, IList<int> list)
-        //{
-        //    if(number < list.First())return IntInListAnalysisResult.Before;
-        //    if(number > list.Last()) return IntInListAnalysisResult.After;
-        //    if (number == list.First()) return IntInListAnalysisResult.First;
-        //    if (number == list.Last()) return IntInListAnalysisResult.Last;
-        //    return IntInListAnalysisResult.Middle;
-        //}
-
-        public static CronTime ToValidCronTime(CronTime cronTime)
+        public static CronTimeToValidCronTimeConversionResult ToValidCronTime(CronTime cronTime)
         {
             var analysis = new CronTimeAnalysisResult(cronTime);
             var time = cronTime.Time;
             var template = cronTime.CronTemplate;
 
+            //Check month
             if (analysis.MonthAnalysis.IntInListResultEnum == IntInListResultEnum.Before)
             {
-                return cronTime.ChangeMonth(template.Months[0]);
+                return CronTimeToValidCronTimeConversionResult.NotValid(cronTime.ChangeMonth(template.Months[0]));
             }
             else if (analysis.MonthAnalysis.IntInListResultEnum == IntInListResultEnum.InBetween)
             {
-                return cronTime.ChangeMonth(template.Months[analysis.MonthAnalysis.NextClosestUpperIndex.Value]);
+                return CronTimeToValidCronTimeConversionResult.NotValid(cronTime.ChangeMonth(template.Months[analysis.MonthAnalysis.NextClosestUpperIndex.Value]));
             }
             else if (analysis.MonthAnalysis.IntInListResultEnum == IntInListResultEnum.After)
             {
-                return cronTime.ChangeYear(time.Year+1);
+                return CronTimeToValidCronTimeConversionResult.NotValid(cronTime.ChangeYear(time.Year+1));
             }
 
             //So the month is valid....now onto day
             if (analysis.DayAnalysis.IntInListResultEnum == IntInListResultEnum.Before)
             {
-                return cronTime.ChangeDay(template.DaysOfMonth[0]);
+                return CronTimeToValidCronTimeConversionResult.NotValid(cronTime.ChangeDay(template.DaysOfMonth[0]));
             }
             else if (analysis.DayAnalysis.IntInListResultEnum == IntInListResultEnum.InBetween)
             {
-                return cronTime.ChangeDay(template.DaysOfMonth[analysis.DayAnalysis.NextClosestUpperIndex.Value]);
+                return CronTimeToValidCronTimeConversionResult.NotValid(cronTime.ChangeDay(template.DaysOfMonth[analysis.DayAnalysis.NextClosestUpperIndex.Value]));
             }
             else if (analysis.DayAnalysis.IntInListResultEnum == IntInListResultEnum.After)
             {
-                return cronTime.IncrementMonth();
+                return CronTimeToValidCronTimeConversionResult.NotValid(cronTime.IncrementMonth());
             }
 
             //So the day is valid....now onto hour
             if (analysis.HourAnalysis.IntInListResultEnum == IntInListResultEnum.Before)
             {
-                return cronTime.ChangeHour(template.Hours[0]);
+                return CronTimeToValidCronTimeConversionResult.NotValid(cronTime.ChangeHour(template.Hours[0]));
             }
             else if (analysis.HourAnalysis.IntInListResultEnum == IntInListResultEnum.InBetween)
             {
-                return cronTime.ChangeHour(template.Hours[analysis.HourAnalysis.NextClosestUpperIndex.Value]);
+                return CronTimeToValidCronTimeConversionResult.NotValid(cronTime.ChangeHour(template.Hours[analysis.HourAnalysis.NextClosestUpperIndex.Value]));
             }
             else if (analysis.HourAnalysis.IntInListResultEnum == IntInListResultEnum.After)
             {
-                return cronTime.IncrementDay();
+                return CronTimeToValidCronTimeConversionResult.NotValid(cronTime.IncrementDay());
             }
 
             //So the hour is valid....now onto minute
             if (analysis.MinuteAnalysis.IntInListResultEnum == IntInListResultEnum.Before)
             {
-                return cronTime.ChangeMinute(template.Hours[0]);
+                return CronTimeToValidCronTimeConversionResult.NotValid(cronTime.ChangeMinute(template.Minutes[0]));
             }
             else if (analysis.MinuteAnalysis.IntInListResultEnum == IntInListResultEnum.InBetween)
             {
-                return cronTime.ChangeMinute(template.Hours[analysis.MinuteAnalysis.NextClosestUpperIndex.Value]);
+                return CronTimeToValidCronTimeConversionResult.NotValid(cronTime.ChangeMinute(template.Minutes[analysis.MinuteAnalysis.NextClosestUpperIndex.Value]));
             }
             else if (analysis.MinuteAnalysis.IntInListResultEnum == IntInListResultEnum.After)
             {
-                return cronTime.IncrementHour();
+                return CronTimeToValidCronTimeConversionResult.NotValid(cronTime.IncrementHour());
             }
 
-            return cronTime;
+            return CronTimeToValidCronTimeConversionResult.Valid(cronTime);
         }
         
         public static IncrementListResult IncrementList(int currentValue, IList<int> possibleValues)
@@ -203,7 +138,28 @@ namespace Rogero.SchedulingLibrary
             var dayOfWeekMatch = cronTemplate.DayOfWeek.Contains((int)date.DayOfWeek);
             return dayOfWeekMatch;
         }
+    }
 
+    public class CronTimeToValidCronTimeConversionResult
+    {
+        public bool AlreadyValid { get; }
+        public CronTime CronTime { get; }
+
+        private CronTimeToValidCronTimeConversionResult(bool alreadyValid, CronTime cronTime)
+        {
+            AlreadyValid = alreadyValid;
+            CronTime = cronTime;
+        }
+
+        public static CronTimeToValidCronTimeConversionResult Valid(CronTime cronTime)
+        {
+            return new CronTimeToValidCronTimeConversionResult(true, cronTime);
+        }
+
+        public static CronTimeToValidCronTimeConversionResult NotValid(CronTime cronTime)
+        {
+            return new CronTimeToValidCronTimeConversionResult(false, cronTime);
+        }
     }
 
     public class CronTimeAnalysisResult
