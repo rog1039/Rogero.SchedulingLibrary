@@ -110,7 +110,6 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="Properties\Rogero.SchedulingLibrary.Uwp.rd.xml" />
   </ItemGroup>
-  <Import Project="..\Rogero.SchedulingLibrary\Rogero.SchedulingLibrary.projitems" Label="Shared" />
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '14.0' ">
     <VisualStudioVersion>14.0</VisualStudioVersion>
   </PropertyGroup>
