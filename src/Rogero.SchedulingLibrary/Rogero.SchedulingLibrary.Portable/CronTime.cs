@@ -1,8 +1,9 @@
 using System;
+using System.Collections.Generic;
 
 namespace Rogero.SchedulingLibrary
 {
-    public class CronTime : IEquatable<CronTime>, IComparable<CronTime>, IComparable
+    public partial class CronTime : IEquatable<CronTime>, IComparable<CronTime>, IComparable
     {
         public CronTemplate CronTemplate { get; }
         public Time Time { get; }
@@ -20,7 +21,7 @@ namespace Rogero.SchedulingLibrary
             Time = new Time(datetime);
         }
 
-        public CronTime GetNext()
+        private CronTime GetNextUnsafe()
         {
             return CronTimeIncrementor.Increment(this);
         }
@@ -30,7 +31,7 @@ namespace Rogero.SchedulingLibrary
             var cronTime = this;
             while (true)
             {
-                cronTime = cronTime.GetNext();
+                cronTime = cronTime.GetNextUnsafe();
                 var dateTime = cronTime.Time.ToDateTime();
                 if (dateTime.HasValue) return cronTime;
             }
@@ -61,113 +62,54 @@ namespace Rogero.SchedulingLibrary
             return new CronTime(CronTemplate, Time.ChangeMinute(minute, CronTemplate));
         }
 
-
-        public static bool operator >(CronTime c1, CronTime c2)
-        {
-            return c1.Time > c2.Time;
-        }
-
-        public static bool operator <(CronTime c1, CronTime c2)
-        {
-            return c1.Time < c2.Time;
-        }
-
         public CronTime IncrementMonth()
         {
-            var monthResult = CronTimeIncrementor.IncrementList(Time.Month, CronTemplate.Months);
-            if (monthResult.Overflow)
-            {
-                return ChangeYear(Time.Year + 1);
-            }
-            else
-            {
-                return ChangeMonth(monthResult.Value);
-            }
+            var monthResult = IncrementList(Time.Month, CronTemplate.Months);
+            return monthResult.Overflow
+                ? ChangeYear(Time.Year + 1)
+                : ChangeMonth(monthResult.Value);
         }
 
         public CronTime IncrementDay()
         {
-            var dayResult = CronTimeIncrementor.IncrementList(Time.Day, CronTemplate.DaysOfMonth);
-            if (dayResult.Overflow)
-            {
-                return IncrementMonth();
-            }
-            else
-            {
-                return ChangeDay(dayResult.Value);
-            }
+
+            var dayResult = IncrementList(Time.Day, CronTemplate.DaysOfMonth);
+            return dayResult.Overflow
+                ? IncrementMonth()
+                : ChangeDay(dayResult.Value);
+        }
+
+        private static bool MatchDayOfWeek(CronTemplate cronTemplate, DateTime date)
+        {
+            var dayOfWeekMatch = cronTemplate.DayOfWeek.Contains((int)date.DayOfWeek);
+            return dayOfWeekMatch;
         }
 
         public CronTime IncrementHour()
         {
-            var hourResult = CronTimeIncrementor.IncrementList(Time.Hour, CronTemplate.Hours);
-            if (hourResult.Overflow)
-            {
-                return IncrementDay();
-            }
-            else
-            {
-                return ChangeHour(hourResult.Value);
-            }
+            var hourResult = IncrementList(Time.Hour, CronTemplate.Hours);
+            return hourResult.Overflow
+                ? IncrementDay()
+                : ChangeHour(hourResult.Value);
         }
 
         public CronTime IncrementMinute()
         {
-            var minuteResult = CronTimeIncrementor.IncrementList(Time.Minute, CronTemplate.Minutes);
-            if (minuteResult.Overflow)
-            {
-                return IncrementHour();
-            }
-            else
-            {
-                return ChangeMinute(minuteResult.Value);
-            }
+            var minuteResult = IncrementList(Time.Minute, CronTemplate.Minutes);
+            return minuteResult.Overflow
+                ? IncrementHour()
+                : ChangeMinute(minuteResult.Value);
         }
 
-        public bool Equals(CronTime other)
+        public static IncrementListResult IncrementList(int currentValue, IList<int> possibleValues)
         {
-            if (ReferenceEquals(null, other)) return false;
-            if (ReferenceEquals(this, other)) return true;
-            return Equals(CronTemplate, other.CronTemplate) && Equals(Time, other.Time);
+            var nextIndex = possibleValues.ClosestLowerIndexOf(currentValue) + 1;
+            var highestIndex = possibleValues.Count - 1;
+            var overflowed = nextIndex > highestIndex;
+
+            return overflowed
+                ? IncrementListResult.ValueWithOverflow(possibleValues[0])
+                : IncrementListResult.ValueWithoutOverflow(possibleValues[nextIndex]);
         }
-
-        public int CompareTo(CronTime other)
-        {
-            return this.Time.CompareTo(other.Time);
-        }
-
-        public override bool Equals(object obj)
-        {
-            if (ReferenceEquals(null, obj)) return false;
-            if (ReferenceEquals(this, obj)) return true;
-            if (obj.GetType() != this.GetType()) return false;
-            return Equals((CronTime) obj);
-        }
-
-        public override int GetHashCode()
-        {
-            unchecked
-            {
-                return ((CronTemplate != null ? CronTemplate.GetHashCode() : 0)*397) ^ (Time != null ? Time.GetHashCode() : 0);
-            }
-        }
-
-        public int CompareTo(object obj)
-        {
-            if (obj.GetType() != this.GetType()) return -1;
-            return CompareTo((CronTime) obj);
-        }
-
-        public static bool operator ==(CronTime left, CronTime right)
-        {
-            return Equals(left, right);
-        }
-
-        public static bool operator !=(CronTime left, CronTime right)
-        {
-            return !Equals(left, right);
-        }
-
-
     }
 }

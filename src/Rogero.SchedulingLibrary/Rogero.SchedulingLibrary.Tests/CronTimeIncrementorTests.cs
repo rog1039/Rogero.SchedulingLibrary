@@ -15,6 +15,15 @@ namespace Rogero.SchedulingLibrary.Tests
                 .WithAllMonths()
                 .BuildCronTemplate();
 
+        private CronTemplate mondayTemplate =
+            new CronTemplateBuilder()
+                .WithMinutes(0)
+                .WithHours(8, 17)
+                .WithAllDaysOfMonth()
+                .WithDaysOfWeek(1)
+                .WithAllMonths()
+                .BuildCronTemplate();
+
         private CronTime time;
 
         public CronTimeIncrementorTests()
@@ -24,7 +33,7 @@ namespace Rogero.SchedulingLibrary.Tests
 
         [Fact()]
         [Trait("Category", "Instant")]
-        public void MethodName()
+        public void GetNextValidTime()
         {
             var nextTime = time.GetNextEnsureValidDateTime();
             nextTime.Time.Should().Be(new Time(new DateTime(2016,01,01,12,0,0)));
@@ -37,6 +46,19 @@ namespace Rogero.SchedulingLibrary.Tests
             var date = new CronTime(template, new DateTime(2016, 01, 01, 13, 10, 0));
             var nextValid = CronTimeIncrementor.ToValidCronTime(date);
             nextValid.CronTime.Time.ToDateTime().Should().Be(new DateTime(2016, 01, 01, 18, 0, 0));
+        }
+        
+        [Fact()]
+        [Trait("Category", "Instant")]
+        public void TestFilteringByDayOfWeek()
+        {
+            var date = new CronTime(mondayTemplate, new DateTime(2016, 01, 01, 13, 10, 0)).GetNextEnsureValidDateTime();
+            for (int i = 0; i < 100; i++)
+            {
+                date.DateTime.DayOfWeek.Should().Be(DayOfWeek.Monday);
+                Console.WriteLine(date.DateTime.ToLongDateString());
+                date = date.IncrementMinute();
+            }
         }
     }
 }
