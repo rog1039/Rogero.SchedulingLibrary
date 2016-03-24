@@ -8,7 +8,6 @@ namespace Rogero.SchedulingLibrary
     {
         public static int ClosestLowerIndexOf(this IList<int> possibleValues, int value)
         {
-            bool found = false;
             for (int i = 0; i < possibleValues.Count; i++)
             {
                 if (value < possibleValues[i]) return i - 1;

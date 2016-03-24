@@ -25,9 +25,8 @@ namespace Rogero.SchedulingLibrary.Tests
         public void TimeAlreadyValid()
         {
             var time = new CronTime(_template, new DateTime(2016, 6, 15, 12, 10, 0));
-            var validTime = CronTimeIncrementor.ToValidCronTime(time);
-            time.Should().Be(validTime.CronTime);
-            validTime.AlreadyValid.Should().BeTrue();
+            var validTime = CronTimeIncrementor.GetValidCronTimeIfNotValid(time);
+            validTime.HasNoValue.Should().BeTrue();
         }
         
         [Fact()]
@@ -35,9 +34,8 @@ namespace Rogero.SchedulingLibrary.Tests
         public void MonthBefore()
         {
             var time = new CronTime(_template, new DateTime(2016, 01, 31, 13, 0, 0));
-            var validTime = CronTimeIncrementor.ToValidCronTime(time);
             var expectedTime = new CronTime(_template, new DateTime(2016, 03, 05, 06, 10, 0));
-            validTime.CronTime.Should().Be(expectedTime);
+            time.Should().Be(expectedTime);
         }
 
         [Fact()]
@@ -45,9 +43,8 @@ namespace Rogero.SchedulingLibrary.Tests
         public void MonthInBetween()
         {
             var time = new CronTime(_template, new DateTime(2016, 5, 31, 13, 0, 0));
-            var validTime = CronTimeIncrementor.ToValidCronTime(time);
             var expectedTime = new CronTime(_template, new DateTime(2016, 06, 05, 06, 10, 0));
-            validTime.CronTime.Should().Be(expectedTime);
+            time.Should().Be(expectedTime);
         }
 
         [Fact()]
@@ -55,9 +52,8 @@ namespace Rogero.SchedulingLibrary.Tests
         public void MonthAfter()
         {
             var time = new CronTime(_template, new DateTime(2016, 10, 31, 13, 0, 0));
-            var validTime = CronTimeIncrementor.ToValidCronTime(time);
             var expectedTime = new CronTime(_template, new DateTime(2017, 03, 05, 06, 10, 0));
-            validTime.CronTime.Should().Be(expectedTime);
+            time.Should().Be(expectedTime);
         }
         
         [Fact()]
@@ -65,9 +61,8 @@ namespace Rogero.SchedulingLibrary.Tests
         public void DayBefore()
         {
             var time = new CronTime(_template, new DateTime(2016, 03, 02, 13, 0, 0));
-            var validTime = CronTimeIncrementor.ToValidCronTime(time);
             var expectedTime = new CronTime(_template, new DateTime(2016, 03, 05, 06, 10, 0));
-            validTime.CronTime.Should().Be(expectedTime);
+            time.Should().Be(expectedTime);
         }
 
         [Fact()]
@@ -75,9 +70,8 @@ namespace Rogero.SchedulingLibrary.Tests
         public void DayInBetween()
         {
             var time = new CronTime(_template, new DateTime(2016, 03, 12, 13, 0, 0));
-            var validTime = CronTimeIncrementor.ToValidCronTime(time);
             var expectedTime = new CronTime(_template, new DateTime(2016, 03, 15, 06, 10, 0));
-            validTime.CronTime.Should().Be(expectedTime);
+            time.Should().Be(expectedTime);
         }
 
         [Fact()]
@@ -85,9 +79,8 @@ namespace Rogero.SchedulingLibrary.Tests
         public void DayAfter()
         {
             var time = new CronTime(_template, new DateTime(2016, 03, 31, 13, 0, 0));
-            var validTime = CronTimeIncrementor.ToValidCronTime(time);
             var expectedTime = new CronTime(_template, new DateTime(2016, 06, 05, 06, 10, 0));
-            validTime.CronTime.Should().Be(expectedTime);
+            time.Should().Be(expectedTime);
         }
 
         [Fact()]
@@ -95,9 +88,8 @@ namespace Rogero.SchedulingLibrary.Tests
         public void HourBefore()
         {
             var time = new CronTime(_template, new DateTime(2016, 03, 05, 4, 0, 0));
-            var validTime = CronTimeIncrementor.ToValidCronTime(time);
             var expectedTime = new CronTime(_template, new DateTime(2016, 03, 05, 06, 10, 0));
-            validTime.CronTime.Should().Be(expectedTime);
+            time.Should().Be(expectedTime);
         }
 
         [Fact()]
@@ -105,9 +97,8 @@ namespace Rogero.SchedulingLibrary.Tests
         public void HourInBetween()
         {
             var time = new CronTime(_template, new DateTime(2016, 03, 05, 13, 0, 0));
-            var validTime = CronTimeIncrementor.ToValidCronTime(time);
             var expectedTime = new CronTime(_template, new DateTime(2016, 03, 05, 18, 10, 0));
-            validTime.CronTime.Should().Be(expectedTime);
+            time.Should().Be(expectedTime);
         }
 
         [Fact()]
@@ -115,9 +106,8 @@ namespace Rogero.SchedulingLibrary.Tests
         public void HourAfter()
         {
             var time = new CronTime(_template, new DateTime(2016, 03, 05, 21, 0, 0));
-            var validTime = CronTimeIncrementor.ToValidCronTime(time);
             var expectedTime = new CronTime(_template, new DateTime(2016, 03, 15, 06, 10, 0));
-            validTime.CronTime.Should().Be(expectedTime);
+            time.Should().Be(expectedTime);
         }
 
 
@@ -126,9 +116,8 @@ namespace Rogero.SchedulingLibrary.Tests
         public void MinuteBefore()
         {
             var time = new CronTime(_template, new DateTime(2016, 03, 05, 06, 05, 0));
-            var validTime = CronTimeIncrementor.ToValidCronTime(time);
             var expectedTime = new CronTime(_template, new DateTime(2016, 03, 05, 06, 10, 0));
-            validTime.CronTime.Should().Be(expectedTime);
+            time.Should().Be(expectedTime);
         }
 
         [Fact()]
@@ -136,9 +125,8 @@ namespace Rogero.SchedulingLibrary.Tests
         public void MinuteInBetween()
         {
             var time = new CronTime(_template, new DateTime(2016, 03, 05, 12, 25, 0));
-            var validTime = CronTimeIncrementor.ToValidCronTime(time);
             var expectedTime = new CronTime(_template, new DateTime(2016, 03, 05, 12, 30, 0));
-            validTime.CronTime.Should().Be(expectedTime);
+            time.Should().Be(expectedTime);
         }
 
         [Fact()]
@@ -146,9 +134,8 @@ namespace Rogero.SchedulingLibrary.Tests
         public void MinuteAfter()
         {
             var time = new CronTime(_template, new DateTime(2016, 03, 05, 12, 55, 0));
-            var validTime = CronTimeIncrementor.ToValidCronTime(time);
             var expectedTime = new CronTime(_template, new DateTime(2016, 03, 05, 18, 10, 0));
-            validTime.CronTime.Should().Be(expectedTime);
+            time.Should().Be(expectedTime);
         }
     }
 }

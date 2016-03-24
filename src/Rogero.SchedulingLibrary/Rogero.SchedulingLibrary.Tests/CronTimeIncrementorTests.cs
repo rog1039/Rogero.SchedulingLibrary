@@ -33,10 +33,9 @@ namespace Rogero.SchedulingLibrary.Tests
 
         [Fact()]
         [Trait("Category", "Instant")]
-        public void GetNextValidTime()
+        public void CreatingACronTimeShouldResultInAValidTime()
         {
-            var nextTime = time.GetNextEnsureValidDateTime();
-            nextTime.Time.Should().Be(new Time(new DateTime(2016,01,01,12,0,0)));
+            time.Time.Should().Be(new Time(new DateTime(2016,01,01,12,0,0)));
         }
 
         [Fact()]
@@ -44,20 +43,19 @@ namespace Rogero.SchedulingLibrary.Tests
         public void ConvertIncomingCronTimToValidCronTime()
         {
             var date = new CronTime(template, new DateTime(2016, 01, 01, 13, 10, 0));
-            var nextValid = CronTimeIncrementor.ToValidCronTime(date);
-            nextValid.CronTime.Time.ToDateTime().Should().Be(new DateTime(2016, 01, 01, 18, 0, 0));
+            date.Time.ToDateTime().Should().Be(new DateTime(2016, 01, 01, 18, 0, 0));
         }
         
         [Fact()]
         [Trait("Category", "Instant")]
         public void TestFilteringByDayOfWeek()
         {
-            var date = new CronTime(mondayTemplate, new DateTime(2016, 01, 01, 13, 10, 0)).GetNextEnsureValidDateTime();
-            for (int i = 0; i < 100; i++)
+            var cronTime = new CronTime(mondayTemplate, new DateTime(2016, 01, 01, 13, 10, 0));
+            for (int i = 0; i < 1000; i++)
             {
-                date.DateTime.DayOfWeek.Should().Be(DayOfWeek.Monday);
-                Console.WriteLine(date.DateTime.ToLongDateString());
-                date = date.IncrementMinute();
+                //date.DateTime.DayOfWeek.Should().Be(DayOfWeek.Monday);
+                Console.WriteLine($"{cronTime.DateTime.Value:R}");
+                cronTime = cronTime.GetNextEnsureValidDateTime();
             }
         }
     }

@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Rogero.Option;
 
 namespace Rogero.SchedulingLibrary
 {
@@ -7,18 +8,23 @@ namespace Rogero.SchedulingLibrary
     {
         public CronTemplate CronTemplate { get; }
         public Time Time { get; }
-        public DateTime DateTime => Time.ToDateTime().Value;
+        public DateTime? DateTime => Time.ToDateTime();
 
         public CronTime(CronTemplate cronTemplate, Time time)
         {
             CronTemplate = cronTemplate;
             Time = time;
+
+            var validCronTime = CronTimeIncrementor.GetValidCronTimeIfNotValid(this);
+            if (validCronTime.HasValue) Time = validCronTime.Value.Time;
         }
 
         public CronTime(CronTemplate cronTemplate, DateTime datetime)
         {
             CronTemplate = cronTemplate;
             Time = new Time(datetime);
+            var validCronTime = CronTimeIncrementor.GetValidCronTimeIfNotValid(this);
+            if (validCronTime.HasValue) Time = validCronTime.Value.Time;
         }
 
         private CronTime GetNextUnsafe()
@@ -72,16 +78,20 @@ namespace Rogero.SchedulingLibrary
 
         public CronTime IncrementDay()
         {
-
-            var dayResult = IncrementList(Time.Day, CronTemplate.DaysOfMonth);
-            return dayResult.Overflow
-                ? IncrementMonth()
-                : ChangeDay(dayResult.Value);
+            var cronTime = this;
+            while (true)
+            {
+                var dayResult = IncrementList(cronTime.Time.Day, cronTime.CronTemplate.DaysOfMonth);
+                cronTime = dayResult.Overflow
+                    ? IncrementMonth()
+                    : ChangeDay(dayResult.Value);
+                if (cronTime.DateTime.HasValue && MatchDayOfWeek(CronTemplate, cronTime.DateTime.Value)) return cronTime;
+            }
         }
 
-        private static bool MatchDayOfWeek(CronTemplate cronTemplate, DateTime date)
+        public static bool MatchDayOfWeek(CronTemplate cronTemplate, DateTime date)
         {
-            var dayOfWeekMatch = cronTemplate.DayOfWeek.Contains((int)date.DayOfWeek);
+            var dayOfWeekMatch = cronTemplate.DayOfWeek.Contains((int) date.DayOfWeek);
             return dayOfWeekMatch;
         }
 

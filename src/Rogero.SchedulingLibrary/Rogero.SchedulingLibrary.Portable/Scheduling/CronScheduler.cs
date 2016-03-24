@@ -92,7 +92,7 @@ namespace Rogero.SchedulingLibrary.Scheduling
 
         private void SetNextRunTime()
         {
-            var timeUntilFirstDue = _cronTimeQueue.First().DateTime.Subtract(_dateTimeRepository.Now());
+            var timeUntilFirstDue = _cronTimeQueue.First().DateTime.Value.Subtract(_dateTimeRepository.Now());
 
             var timeUntilTimerFires = (timeUntilFirstDue < TimeSpan.FromMilliseconds(300))
                 ? timeUntilFirstDue

@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Rogero.Option;
 
 namespace Rogero.SchedulingLibrary
 {
@@ -8,188 +9,152 @@ namespace Rogero.SchedulingLibrary
     {
         public static CronTime Increment(CronTime cronTime)
         {
-            var conversionResult = ToValidCronTime(cronTime);
-            if (!conversionResult.AlreadyValid) return conversionResult.CronTime;
-            return conversionResult.CronTime.IncrementMinute();
+            var newValidCronTime = GetValidCronTimeIfNotValid(cronTime);
+            return newValidCronTime.HasValue
+                ? newValidCronTime.Value
+                : cronTime.IncrementMinute();
         }
 
-        public static CronTimeToValidCronTimeConversionResult ToValidCronTime(CronTime cronTime)
+        public static Option<CronTime> GetValidCronTimeIfNotValid(CronTime cronTime)
         {
-            var analysis = new CronTimeAnalysisResult(cronTime);
-            var time = cronTime.Time;
-            var template = cronTime.CronTemplate;
+            var cronTimeAnalysis = new CronTimeAnalysis(cronTime);
 
-            //Check month
-            if (analysis.MonthAnalysis.IntInListResultEnum == IntInListResultEnum.Before)
-            {
-                return CronTimeToValidCronTimeConversionResult.NotValid(cronTime.ChangeMonth(template.Months[0]));
-            }
-            else if (analysis.MonthAnalysis.IntInListResultEnum == IntInListResultEnum.InBetween)
-            {
-                return CronTimeToValidCronTimeConversionResult.NotValid(cronTime.ChangeMonth(template.Months[analysis.MonthAnalysis.NextClosestUpperIndex.Value]));
-            }
-            else if (analysis.MonthAnalysis.IntInListResultEnum == IntInListResultEnum.After)
-            {
-                return CronTimeToValidCronTimeConversionResult.NotValid(cronTime.ChangeYear(time.Year+1));
-            }
+            if (!cronTimeAnalysis.MonthHasIndex)
+                return cronTime.IncrementMonth();
 
-            //So the month is valid....now onto day
-            if (analysis.DayAnalysis.IntInListResultEnum == IntInListResultEnum.Before)
-            {
-                return CronTimeToValidCronTimeConversionResult.NotValid(cronTime.ChangeDay(template.DaysOfMonth[0]));
-            }
-            else if (analysis.DayAnalysis.IntInListResultEnum == IntInListResultEnum.InBetween)
-            {
-                return CronTimeToValidCronTimeConversionResult.NotValid(cronTime.ChangeDay(template.DaysOfMonth[analysis.DayAnalysis.NextClosestUpperIndex.Value]));
-            }
-            else if (analysis.DayAnalysis.IntInListResultEnum == IntInListResultEnum.After)
-            {
-                return CronTimeToValidCronTimeConversionResult.NotValid(cronTime.IncrementMonth());
-            }
+            if (!cronTimeAnalysis.DayOfMonthHasIndex || !cronTimeAnalysis.DayOfWeekHasIndex)
+                return cronTime.IncrementDay();
 
-            //So the day is valid....now onto hour
-            if (analysis.HourAnalysis.IntInListResultEnum == IntInListResultEnum.Before)
-            {
-                return CronTimeToValidCronTimeConversionResult.NotValid(cronTime.ChangeHour(template.Hours[0]));
-            }
-            else if (analysis.HourAnalysis.IntInListResultEnum == IntInListResultEnum.InBetween)
-            {
-                return CronTimeToValidCronTimeConversionResult.NotValid(cronTime.ChangeHour(template.Hours[analysis.HourAnalysis.NextClosestUpperIndex.Value]));
-            }
-            else if (analysis.HourAnalysis.IntInListResultEnum == IntInListResultEnum.After)
-            {
-                return CronTimeToValidCronTimeConversionResult.NotValid(cronTime.IncrementDay());
-            }
+            if (!cronTimeAnalysis.HourHasIndex)
+                return cronTime.IncrementHour();
 
-            //So the hour is valid....now onto minute
-            if (analysis.MinuteAnalysis.IntInListResultEnum == IntInListResultEnum.Before)
-            {
-                return CronTimeToValidCronTimeConversionResult.NotValid(cronTime.ChangeMinute(template.Minutes[0]));
-            }
-            else if (analysis.MinuteAnalysis.IntInListResultEnum == IntInListResultEnum.InBetween)
-            {
-                return CronTimeToValidCronTimeConversionResult.NotValid(cronTime.ChangeMinute(template.Minutes[analysis.MinuteAnalysis.NextClosestUpperIndex.Value]));
-            }
-            else if (analysis.MinuteAnalysis.IntInListResultEnum == IntInListResultEnum.After)
-            {
-                return CronTimeToValidCronTimeConversionResult.NotValid(cronTime.IncrementHour());
-            }
+            if (!cronTimeAnalysis.MinuteHasIndex)
+                return cronTime.IncrementMinute();
 
-            return CronTimeToValidCronTimeConversionResult.Valid(cronTime);
+            return Option<CronTime>.None;
         }
     }
 
-    public class CronTimeToValidCronTimeConversionResult
+    public class CronTimeAnalysis
     {
-        public bool AlreadyValid { get; }
-        public CronTime CronTime { get; }
+        public bool MinuteHasIndex { get; }
+        public bool HourHasIndex { get; }
+        public bool DayOfMonthHasIndex { get; }
+        public bool MonthHasIndex { get; }
+        public bool DayOfWeekHasIndex { get; }
 
-        private CronTimeToValidCronTimeConversionResult(bool alreadyValid, CronTime cronTime)
+        public CronTimeAnalysis(bool minuteHasIndex, bool hourHasIndex, bool dayOfMonthHasIndex, bool monthHasIndex, bool dayOfWeekHasIndex)
         {
-            AlreadyValid = alreadyValid;
-            CronTime = cronTime;
+            MinuteHasIndex = minuteHasIndex;
+            HourHasIndex = hourHasIndex;
+            DayOfMonthHasIndex = dayOfMonthHasIndex;
+            MonthHasIndex = monthHasIndex;
+            DayOfWeekHasIndex = dayOfWeekHasIndex;
         }
 
-        public static CronTimeToValidCronTimeConversionResult Valid(CronTime cronTime)
-        {
-            return new CronTimeToValidCronTimeConversionResult(true, cronTime);
-        }
-
-        public static CronTimeToValidCronTimeConversionResult NotValid(CronTime cronTime)
-        {
-            return new CronTimeToValidCronTimeConversionResult(false, cronTime);
-        }
-    }
-
-    public class CronTimeAnalysisResult
-    {
-        public IntInListAnalysisResult MinuteAnalysis { get; }
-        public IntInListAnalysisResult HourAnalysis { get; }
-        public IntInListAnalysisResult DayAnalysis { get; }
-        public IntInListAnalysisResult MonthAnalysis { get; }
-        
-        public CronTimeAnalysisResult(CronTime cronTime)
+        public CronTimeAnalysis(CronTime cronTime)
         {
             var time = cronTime.Time;
             var template = cronTime.CronTemplate;
-            MonthAnalysis = new IntInListAnalysisResult(time.Month, template.Months);
-            DayAnalysis = new IntInListAnalysisResult(time.Day, template.DaysOfMonth);
-            HourAnalysis = new IntInListAnalysisResult(time.Hour, template.Hours);
-            MinuteAnalysis = new IntInListAnalysisResult(time.Minute, template.Minutes);
+            MinuteHasIndex = template.Minutes.Contains(time.Minute);
+            HourHasIndex = template.Hours.Contains(time.Hour);
+            DayOfMonthHasIndex = template.DaysOfMonth.Contains(time.Day);
+            MonthHasIndex = template.Months.Contains(time.Month);
+            DayOfWeekHasIndex = cronTime.DateTime.HasValue && CronTime.MatchDayOfWeek(template, cronTime.DateTime.Value);
         }
     }
 
-    public class IntInListAnalysisResult
-    {
-        public IntInListResultEnum IntInListResultEnum { get; }
-        public int? NextClosestUpperIndex { get; }
-        public int? Index { get; set; }
+    //public class CronTimeAnalysisResult
+    //{
+    //    public IntInListAnalysisResult MinuteAnalysis { get; }
+    //    public IntInListAnalysisResult HourAnalysis { get; }
+    //    public IntInListAnalysisResult DayOfMonthAnalysis { get; }
+    //    public IntInListAnalysisResult MonthAnalysis { get; }
+    //    public bool DayOfWeekIsValid { get; }
 
-        public IntInListAnalysisResult(int value, IList<int> list)
-        {
-            if (value < list[0])
-            {
-                NextClosestUpperIndex = 0;
-                IntInListResultEnum = IntInListResultEnum.Before;
-            }
-            else if (value == list[0])
-            {
-                Index = 0;
-                IntInListResultEnum = IntInListResultEnum.First;
-            }
-            else if (value == list.Last())
-            {
-                Index = list.Count - 1;
-                IntInListResultEnum = IntInListResultEnum.Last;
-            }
-            else if (value > list.Last())
-            {
-                IntInListResultEnum = IntInListResultEnum.After;
-            }
-            else
-            {
-                var state = IndexStateMachine.Started;
-                for (int i = 0; i < list.Count; i++)
-                {
-                    int v = list[i];
-                    if (value == v)
-                    {
-                        Index = i;
-                        IntInListResultEnum = IntInListResultEnum.MiddleIndex;
-                        break;
-                    }
+    //    public CronTimeAnalysisResult(CronTime cronTime)
+    //    {
+    //        var time = cronTime.Time;
+    //        var template = cronTime.CronTemplate;
+    //        MonthAnalysis = new IntInListAnalysisResult(time.Month, template.Months);
+    //        DayOfMonthAnalysis = new IntInListAnalysisResult(time.Day, template.DaysOfMonth);
+    //        HourAnalysis = new IntInListAnalysisResult(time.Hour, template.Hours);
+    //        MinuteAnalysis = new IntInListAnalysisResult(time.Minute, template.Minutes);
+    //        DayOfWeekIsValid = cronTime.DateTime.HasValue && CronTime.MatchDayOfWeek(template, cronTime.DateTime.Value);
+    //    }
+    //}
+
+    //public class IntInListAnalysisResult
+    //{
+    //    public IntInListResultEnum IntInListResultEnum { get; }
+    //    public int? NextClosestUpperIndex { get; }
+    //    public int? Index { get; set; }
+
+    //    public IntInListAnalysisResult(int value, IList<int> list)
+    //    {
+    //        if (value < list[0])
+    //        {
+    //            NextClosestUpperIndex = 0;
+    //            IntInListResultEnum = IntInListResultEnum.Before;
+    //        }
+    //        else if (value == list[0])
+    //        {
+    //            Index = 0;
+    //            IntInListResultEnum = IntInListResultEnum.First;
+    //        }
+    //        else if (value == list.Last())
+    //        {
+    //            Index = list.Count - 1;
+    //            IntInListResultEnum = IntInListResultEnum.Last;
+    //        }
+    //        else if (value > list.Last())
+    //        {
+    //            IntInListResultEnum = IntInListResultEnum.After;
+    //        }
+    //        else
+    //        {
+    //            var state = IndexStateMachine.Started;
+    //            for (int i = 0; i < list.Count; i++)
+    //            {
+    //                int v = list[i];
+    //                if (value == v)
+    //                {
+    //                    Index = i;
+    //                    IntInListResultEnum = IntInListResultEnum.MiddleIndex;
+    //                    break;
+    //                }
                     
-                    if (state == IndexStateMachine.Started || state == IndexStateMachine.LessThan)
-                    {
-                        if (v < value)
-                            state = IndexStateMachine.LessThan;
-                        else
-                        {
-                            state = IndexStateMachine.GreaterThan;
-                            NextClosestUpperIndex = i;
-                            IntInListResultEnum = IntInListResultEnum.InBetween;
-                        }
-                    }
-                }
-            }
-        }
+    //                if (state == IndexStateMachine.Started || state == IndexStateMachine.LessThan)
+    //                {
+    //                    if (v < value)
+    //                        state = IndexStateMachine.LessThan;
+    //                    else
+    //                    {
+    //                        state = IndexStateMachine.GreaterThan;
+    //                        NextClosestUpperIndex = i;
+    //                        IntInListResultEnum = IntInListResultEnum.InBetween;
+    //                    }
+    //                }
+    //            }
+    //        }
+    //    }
 
-        private enum IndexStateMachine
-        {
-            Started,
-            LessThan,
-            Equal,
-            GreaterThan
-        }
-    }
+    //    private enum IndexStateMachine
+    //    {
+    //        Started,
+    //        LessThan,
+    //        Equal,
+    //        GreaterThan
+    //    }
+    //}
 
-    public enum IntInListResultEnum
-    {
-        Before,
-        First, 
-        InBetween,
-        MiddleIndex,
-        Last,
-        After
-    }
+    //public enum IntInListResultEnum
+    //{
+    //    Before,
+    //    First, 
+    //    InBetween,
+    //    MiddleIndex,
+    //    Last,
+    //    After
+    //}
 }
