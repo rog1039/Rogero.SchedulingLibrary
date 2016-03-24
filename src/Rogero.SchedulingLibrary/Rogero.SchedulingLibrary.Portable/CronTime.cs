@@ -68,6 +68,8 @@ namespace Rogero.SchedulingLibrary
             return new CronTime(CronTemplate, Time.ChangeMinute(minute, CronTemplate));
         }
 
+        public CronTime Increment() => IncrementMinute();
+
         public CronTime IncrementMonth()
         {
             var monthResult = IncrementList(Time.Month, CronTemplate.Months);
@@ -111,7 +113,7 @@ namespace Rogero.SchedulingLibrary
                 : ChangeMinute(minuteResult.Value);
         }
 
-        public static IncrementListResult IncrementList(int currentValue, IList<int> possibleValues)
+        private static IncrementListResult IncrementList(int currentValue, IList<int> possibleValues)
         {
             var nextIndex = possibleValues.ClosestLowerIndexOf(currentValue) + 1;
             var highestIndex = possibleValues.Count - 1;

@@ -7,11 +7,11 @@ namespace Rogero.SchedulingLibrary
 {
     public class CronTemplate : IEquatable<CronTemplate>
     {
-        public ListIntEquatable Minutes { get; } = new ListIntEquatable();
-        public ListIntEquatable Hours { get; } = new ListIntEquatable();
-        public ListIntEquatable DaysOfMonth { get; } = new ListIntEquatable();
-        public ListIntEquatable Months { get; } = new ListIntEquatable();
-        public ListIntEquatable DayOfWeek { get; } = new ListIntEquatable();
+        public ListWithEquals Minutes { get; } = new ListWithEquals();
+        public ListWithEquals Hours { get; } = new ListWithEquals();
+        public ListWithEquals DaysOfMonth { get; } = new ListWithEquals();
+        public ListWithEquals Months { get; } = new ListWithEquals();
+        public ListWithEquals DayOfWeek { get; } = new ListWithEquals();
 
         public CronTemplate(IList<int> minutes, IList<int> hours, IList<int> daysOfMonth, IList<int> months, IList<int> dayOfWeek)
         {

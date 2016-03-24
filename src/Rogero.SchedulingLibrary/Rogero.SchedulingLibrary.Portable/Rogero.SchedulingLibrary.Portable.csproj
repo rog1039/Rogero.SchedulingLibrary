@@ -35,6 +35,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="CronTime.Equals.cs" />
+    <Compile Include="CronTimeAnalysis.cs" />
     <Compile Include="Logger.cs" />
     <Compile Include="Scheduling\CronScheduler.cs" />
     <Compile Include="CronTemplate.cs" />
@@ -47,9 +48,10 @@
     <Compile Include="Scheduling\IDateTimeRepository.cs" />
     <Compile Include="IncrementListResult.cs" />
     <Compile Include="ListExtensionMethods.cs" />
-    <Compile Include="ListIntEquatable.cs" />
+    <Compile Include="ListWithEquals.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Time.cs" />
+    <Compile Include="Time.Equals.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="FluentAssertions, Version=4.2.2.0, Culture=neutral, PublicKeyToken=33f2691a05b67b6a, processorArchitecture=MSIL">

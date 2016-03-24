@@ -3,16 +3,15 @@ using System.Linq;
 
 namespace Rogero.SchedulingLibrary
 {
-    public class Time : IEquatable<Time>, IComparable<Time>
+    public partial class Time : IEquatable<Time>, IComparable<Time>
     {
-
-        public int Minute { get; }
-        public int Hour { get; }
-        public int Day { get; }
-        public int Month { get; }
         public int Year { get; }
+        public int Month { get; }
+        public int Day { get; }
+        public int Hour { get; }
+        public int Minute { get; }
 
-        public Time(int minute, int hour, int day, int month, int year)
+        public Time(int year, int month, int day, int hour, int minute)
         {
             Minute = minute;
             Hour = hour;
@@ -32,22 +31,27 @@ namespace Rogero.SchedulingLibrary
 
         public Time ChangeMinute(int minute, CronTemplate template)
         {
-            return new Time(minute, Hour, Day, Month, Year);
+            return new Time(Year, Month, Day, Hour, minute);
         }
 
         public Time ChangeHour(int hour, CronTemplate template)
         {
-            return new Time(template.Minutes.First(), hour, Day, Month, Year);
+            return new Time(Year, Month, Day, hour, template.Minutes.First());
         }
 
         public Time ChangeDay(int day, CronTemplate template)
         {
-            return new Time(template.Minutes.First(), template.Hours.First(), day, Month, Year);
+            return new Time(Year, Month, day, template.Hours.First(), template.Minutes.First());
         }
 
         public Time ChangeMonth(int month, CronTemplate template)
         {
-            return new Time(template.Minutes.First(), template.Hours.First(), template.DaysOfMonth.First(), month, Year);
+            return new Time(Year, month, template.DaysOfMonth.First(), template.Hours.First(), template.Minutes.First());
+        }
+
+        public Time ChangeYear(int year, CronTemplate template)
+        {
+            return new Time(year, template.Months.First(), template.DaysOfMonth.First(), template.Hours.First(), template.Minutes.First());
         }
 
         public DateTime? ToDateTime()
@@ -63,73 +67,5 @@ namespace Rogero.SchedulingLibrary
             }
         }
         
-        public static bool operator >(Time c1, Time c2)
-        {
-            return c1.ToDateTime() > c2.ToDateTime();
-        }
-
-        public static bool operator <(Time c1, Time c2)
-        {
-            return c1.ToDateTime() < c2.ToDateTime();
-        }
-
-        public Time ChangeYear(int year, CronTemplate template)
-        {
-            return new Time(template.Minutes.First(), template.Hours.First(), template.DaysOfMonth.First(), template.Months.First(), year);
-        }
-
-        public bool Equals(Time other)
-        {
-            if (ReferenceEquals(null, other)) return false;
-            if (ReferenceEquals(this, other)) return true;
-            return Minute == other.Minute && Hour == other.Hour && Day == other.Day && Month == other.Month && Year == other.Year;
-        }
-
-        public override bool Equals(object obj)
-        {
-            if (ReferenceEquals(null, obj)) return false;
-            if (ReferenceEquals(this, obj)) return true;
-            if (obj.GetType() != this.GetType()) return false;
-            return Equals((Time)obj);
-        }
-
-        public override int GetHashCode()
-        {
-            unchecked
-            {
-                var hashCode = Minute;
-                hashCode = (hashCode * 397) ^ Hour;
-                hashCode = (hashCode * 397) ^ Day;
-                hashCode = (hashCode * 397) ^ Month;
-                hashCode = (hashCode * 397) ^ Year;
-                return hashCode;
-            }
-        }
-
-        public static bool operator ==(Time left, Time right)
-        {
-            return Equals(left, right);
-        }
-
-        public static bool operator !=(Time left, Time right)
-        {
-            return !Equals(left, right);
-        }
-
-        public int CompareTo(Time time)
-        {
-            int result = 0;
-            result = Year.CompareTo(time.Year);
-            if (result != 0) return result;
-            result = Month.CompareTo(time.Month);
-            if (result != 0) return result;
-            result = Day.CompareTo(time.Day);
-            if (result != 0) return result;
-            result = Hour.CompareTo(time.Hour);
-            if (result != 0) return result;
-            result = Minute.CompareTo(time.Minute);
-
-            return result;
-        }
     }
 }

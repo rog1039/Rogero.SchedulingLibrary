@@ -3,9 +3,9 @@ using System.Linq;
 
 namespace Rogero.SchedulingLibrary
 {
-    public class ListIntEquatable : List<int>
+    public class ListWithEquals : List<int>
     {
-        public bool Equals(ListIntEquatable other)
+        public bool Equals(ListWithEquals other)
         {
             if (ReferenceEquals(null, other)) return false;
             if (ReferenceEquals(this, other)) return true;
@@ -17,7 +17,7 @@ namespace Rogero.SchedulingLibrary
             if (ReferenceEquals(null, obj)) return false;
             if (ReferenceEquals(this, obj)) return true;
             if (obj.GetType() != this.GetType()) return false;
-            return Equals((ListIntEquatable)obj);
+            return Equals((ListWithEquals)obj);
         }
 
         public override int GetHashCode()

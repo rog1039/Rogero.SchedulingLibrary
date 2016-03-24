@@ -91,9 +91,6 @@
     <Compile Include="CronTemplateBuilderTests.cs" />
     <Compile Include="CronTimeGeneratorTests.cs" />
     <Compile Include="CronTimeIncrementorTests.cs" />
-    <Compile Include="IntInListAnalysisResultTests_Count1.cs" />
-    <Compile Include="IntInListAnalysisResultTests_Count2.cs" />
-    <Compile Include="IntInListAnalysisResultTests_Count3.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ToValidCronTimeTests.cs" />
   </ItemGroup>
