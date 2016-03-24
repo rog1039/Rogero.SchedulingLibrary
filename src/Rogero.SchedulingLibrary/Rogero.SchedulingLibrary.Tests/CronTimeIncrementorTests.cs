@@ -55,7 +55,7 @@ namespace Rogero.SchedulingLibrary.Tests
             {
                 //date.DateTime.DayOfWeek.Should().Be(DayOfWeek.Monday);
                 Console.WriteLine($"{cronTime.DateTime.Value:R}");
-                cronTime = cronTime.GetNextEnsureValidDateTime();
+                cronTime = cronTime.GetNext();
             }
         }
     }

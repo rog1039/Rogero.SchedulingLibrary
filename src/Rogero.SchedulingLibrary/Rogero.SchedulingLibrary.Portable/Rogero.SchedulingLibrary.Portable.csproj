@@ -42,7 +42,7 @@
     <Compile Include="CronTemplateBuilder.cs" />
     <Compile Include="CronTime.cs" />
     <Compile Include="CronTimeGenerator.cs" />
-    <Compile Include="CronTimeIncrementor.cs" />
+    <Compile Include="CronTimeValidator.cs" />
     <Compile Include="Scheduling\DateTimeRepositoryFake.cs" />
     <Compile Include="Scheduling\DateTimeRepositoryRx.cs" />
     <Compile Include="Scheduling\IDateTimeRepository.cs" />

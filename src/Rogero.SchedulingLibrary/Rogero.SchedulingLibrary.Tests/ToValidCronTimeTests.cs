@@ -25,7 +25,7 @@ namespace Rogero.SchedulingLibrary.Tests
         public void TimeAlreadyValid()
         {
             var time = new CronTime(_template, new DateTime(2016, 6, 15, 12, 10, 0));
-            var validTime = CronTimeIncrementor.GetValidCronTimeIfNotValid(time);
+            var validTime = CronTimeValidator.GetNextCronTimeThatFitsTheTemplate(time);
             validTime.HasNoValue.Should().BeTrue();
         }
         

@@ -1,21 +1,10 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using Rogero.Option;
 
 namespace Rogero.SchedulingLibrary
 {
-    public class CronTimeIncrementor
+    public class CronTimeValidator
     {
-        public static CronTime Increment(CronTime cronTime)
-        {
-            var newValidCronTime = GetValidCronTimeIfNotValid(cronTime);
-            return newValidCronTime.HasValue
-                ? newValidCronTime.Value
-                : cronTime.IncrementMinute();
-        }
-
-        public static Option<CronTime> GetValidCronTimeIfNotValid(CronTime cronTime)
+        public static Option<CronTime> GetNextCronTimeThatFitsTheTemplate(CronTime cronTime)
         {
             var cronTimeAnalysis = new CronTimeAnalysis(cronTime);
 

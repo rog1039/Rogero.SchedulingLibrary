@@ -9,7 +9,7 @@ namespace Rogero.SchedulingLibrary
         {
             while (true)
             {
-                cronTime = cronTime.GetNextEnsureValidDateTime();
+                cronTime = cronTime.GetNext();
                 yield return cronTime;
             }
         }
@@ -19,7 +19,7 @@ namespace Rogero.SchedulingLibrary
             var cutoffTime = cronTime.Time.ToDateTime().Value + timeSpan;
             while (true)
             {
-                cronTime = cronTime.GetNextEnsureValidDateTime();
+                cronTime = cronTime.GetNext();
                 if (cronTime.Time.ToDateTime().Value > cutoffTime) yield break;
                 yield return cronTime;
             }

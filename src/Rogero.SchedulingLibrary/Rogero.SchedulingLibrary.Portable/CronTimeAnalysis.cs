@@ -7,16 +7,7 @@ namespace Rogero.SchedulingLibrary
         public bool DayOfMonthHasIndex { get; }
         public bool MonthHasIndex { get; }
         public bool DayOfWeekHasIndex { get; }
-
-        public CronTimeAnalysis(bool minuteHasIndex, bool hourHasIndex, bool dayOfMonthHasIndex, bool monthHasIndex, bool dayOfWeekHasIndex)
-        {
-            MinuteHasIndex = minuteHasIndex;
-            HourHasIndex = hourHasIndex;
-            DayOfMonthHasIndex = dayOfMonthHasIndex;
-            MonthHasIndex = monthHasIndex;
-            DayOfWeekHasIndex = dayOfWeekHasIndex;
-        }
-
+        
         public CronTimeAnalysis(CronTime cronTime)
         {
             var time = cronTime.Time;
