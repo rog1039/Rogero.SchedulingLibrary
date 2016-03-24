@@ -18,7 +18,7 @@ namespace Rogero.SchedulingLibrary.Scheduling
         private Action _callBack;
         private CronTime _cronTime;
 
-        public CronSchedulerCallback(IDateTimeRepository dateTimeRepository, CronTemplate cronTemplate, IScheduler scheduler)
+        public CronSchedulerCallback(IDateTimeRepository dateTimeRepository, IScheduler scheduler, CronTemplate cronTemplate)
         {
             _dateTimeRepository = dateTimeRepository;
             _cronTemplate = cronTemplate;

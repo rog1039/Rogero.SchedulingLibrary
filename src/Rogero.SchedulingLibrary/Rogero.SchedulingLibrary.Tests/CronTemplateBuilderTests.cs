@@ -58,7 +58,7 @@ namespace Rogero.SchedulingLibrary.Tests
         public void RunOnceAtStart()
         {
             var callbackCount = 0;
-            var scheduler = new CronSchedulerCallback(_dateTimeRepository, _cronTemplate, _testScheduler);
+            var scheduler = new CronSchedulerCallback(_dateTimeRepository, _testScheduler, _cronTemplate);
             Logger.LogAction = z => Debug.WriteLine(z);
             scheduler.Start(() =>
             {
@@ -75,7 +75,7 @@ namespace Rogero.SchedulingLibrary.Tests
         public void Run100Times()
         {
             var callbackCount = 0;
-            var scheduler = new CronSchedulerCallback(_dateTimeRepository, _cronTemplate, _testScheduler);
+            var scheduler = new CronSchedulerCallback(_dateTimeRepository, _testScheduler, _cronTemplate);
             scheduler.Start(() =>
             {
                 callbackCount++;
@@ -90,7 +90,7 @@ namespace Rogero.SchedulingLibrary.Tests
         public void Run10000Times()
         {
             var callbackCount = 0;
-            var scheduler = new CronSchedulerCallback(_dateTimeRepository, _cronTemplate, _testScheduler);
+            var scheduler = new CronSchedulerCallback(_dateTimeRepository, _testScheduler, _cronTemplate);
             scheduler.Start(() =>
             {
                 callbackCount++;
