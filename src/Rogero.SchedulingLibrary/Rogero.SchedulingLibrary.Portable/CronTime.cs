@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Rogero.SchedulingLibrary.Infrastructure;
 
 namespace Rogero.SchedulingLibrary
 {

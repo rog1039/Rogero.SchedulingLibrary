@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace Rogero.SchedulingLibrary
+namespace Rogero.SchedulingLibrary.Infrastructure
 {
     public static class ListExtensionMethods
     {

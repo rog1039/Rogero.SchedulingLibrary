@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Rogero.SchedulingLibrary
+namespace Rogero.SchedulingLibrary.Infrastructure
 {
     public static class Logger
     {

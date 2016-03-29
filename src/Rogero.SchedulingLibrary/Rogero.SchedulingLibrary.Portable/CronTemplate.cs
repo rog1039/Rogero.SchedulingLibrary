@@ -1,15 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
+using Rogero.SchedulingLibrary.Infrastructure;
 
 namespace Rogero.SchedulingLibrary
 {
     public class CronTemplate : IEquatable<CronTemplate>
     {
-        public ListWithEquals Minutes { get; } = new ListWithEquals();
-        public ListWithEquals Hours { get; } = new ListWithEquals();
-        public ListWithEquals DaysOfMonth { get; } = new ListWithEquals();
-        public ListWithEquals Months { get; } = new ListWithEquals();
-        public ListWithEquals DayOfWeek { get; } = new ListWithEquals();
+        public EquatableList Minutes { get; } = new EquatableList();
+        public EquatableList Hours { get; } = new EquatableList();
+        public EquatableList DaysOfMonth { get; } = new EquatableList();
+        public EquatableList Months { get; } = new EquatableList();
+        public EquatableList DayOfWeek { get; } = new EquatableList();
 
         public CronTemplate(IList<int> minutes, IList<int> hours, IList<int> daysOfMonth, IList<int> months, IList<int> dayOfWeek)
         {

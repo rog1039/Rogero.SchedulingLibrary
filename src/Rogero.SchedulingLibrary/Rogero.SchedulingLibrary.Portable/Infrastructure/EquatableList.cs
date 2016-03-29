@@ -1,11 +1,11 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 
-namespace Rogero.SchedulingLibrary
+namespace Rogero.SchedulingLibrary.Infrastructure
 {
-    public class ListWithEquals : List<int>
+    public class EquatableList : List<int>
     {
-        public bool Equals(ListWithEquals other)
+        public bool Equals(EquatableList other)
         {
             if (ReferenceEquals(null, other)) return false;
             if (ReferenceEquals(this, other)) return true;
@@ -17,7 +17,7 @@ namespace Rogero.SchedulingLibrary
             if (ReferenceEquals(null, obj)) return false;
             if (ReferenceEquals(this, obj)) return true;
             if (obj.GetType() != this.GetType()) return false;
-            return Equals((ListWithEquals)obj);
+            return Equals((EquatableList)obj);
         }
 
         public override int GetHashCode()
