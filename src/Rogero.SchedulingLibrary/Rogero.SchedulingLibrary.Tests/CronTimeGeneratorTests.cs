@@ -86,13 +86,10 @@ namespace Rogero.SchedulingLibrary.Tests
                 nextDate.Time.ToDateTime().Should().Be(shouldBeDate);
             }
         }
-    }
 
-    public class GeneratorTests2
-    {
         [Fact()]
         [Trait("Category", "Instant")]
-        public void MethodName()
+        public void TestNextCronTimeWhenStartingCronTimeIsInvalid()
         {
             var nextTimes = CronTimeGenerator.Generate(
                 new CronTime(
