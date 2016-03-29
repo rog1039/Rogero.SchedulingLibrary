@@ -11,6 +11,10 @@ namespace Rogero.SchedulingLibrary.Scheduling
 {
     public class CronSchedulerReactive
     {
+        public IObservable<Unit> SchedulerObservable => GetSchedulerObservable();
+        public IList<CronTime> Next100CronTimes => _cronSchedulerCallback.CronTimeQueue;
+        public CronTime LastFiredSchedule => _cronSchedulerCallback.LastFiredSchedule;
+
         private bool _schedulerStarted = false;
 
         private readonly Subject<Unit> _schedulerCallbackObservable = new Subject<Unit>();
@@ -21,7 +25,7 @@ namespace Rogero.SchedulingLibrary.Scheduling
             _cronSchedulerCallback = new CronSchedulerCallback(dateTimeRepository, scheduler, cronTemplate);
         }
 
-        public IObservable<Unit> GetSchedulerObservable()
+        private IObservable<Unit> GetSchedulerObservable()
         {
             if(!_schedulerStarted) _cronSchedulerCallback.Start(() => _schedulerCallbackObservable.OnNext(Unit.Default));
             return _schedulerCallbackObservable;
@@ -30,10 +34,12 @@ namespace Rogero.SchedulingLibrary.Scheduling
 
     public class CronSchedulerCallback
     {
+        public IList<CronTime> CronTimeQueue { get; private set; } = new List<CronTime>();
+        public CronTime LastFiredSchedule { get; private set; }
+
         private readonly IDateTimeRepository _dateTimeRepository;
         private readonly CronTemplate _cronTemplate;
         private readonly IScheduler _scheduler;
-        private IList<CronTime> _cronTimeQueue = new List<CronTime>();
         private static int _desiredCronQueueSize = 100;
         
         private Action _callBack;
@@ -65,8 +71,8 @@ namespace Rogero.SchedulingLibrary.Scheduling
             var cronTimes = CronTimeGenerator.CreateByLesserOfTimeSpanOrCountWithMinimum(_cronTime,
                                                                                          TimeSpan.FromMinutes(5), 10,
                                                                                          _desiredCronQueueSize);
-            _cronTimeQueue.AddRange(cronTimes);
-            _cronTimeQueue = _cronTimeQueue.OrderBy(z => z.Time).ToList();
+            CronTimeQueue.AddRange(cronTimes);
+            CronTimeQueue = CronTimeQueue.OrderBy(z => z.Time).ToList();
         }
 
         private void Start()
@@ -77,6 +83,7 @@ namespace Rogero.SchedulingLibrary.Scheduling
             if (cronTimesDueNow.HasValue)
             {
                 RemoveCronTimes(cronTimesDueNow.Value);
+                TopOfCronTimeQueue();
                 SendCallbackToClient();
             }
             TopOfCronTimeQueue();
@@ -85,14 +92,15 @@ namespace Rogero.SchedulingLibrary.Scheduling
 
         private Option<IList<CronTime>>  GetDueCronTimes()
         {
-            var dueCronTimes = _cronTimeQueue.Where(z => z.DateTime < _dateTimeRepository.Now()).ToList();
+            var dueCronTimes = CronTimeQueue.Where(z => z.DateTime < _dateTimeRepository.Now()).ToList();
             if (dueCronTimes.Count == 0) return Option<IList<CronTime>>.None;
             return dueCronTimes;
         }
 
         private void RemoveCronTimes(IList<CronTime> dueCronTimes)
         {
-            _cronTimeQueue = _cronTimeQueue.Except(dueCronTimes).OrderBy(z => z.Time).ToList();
+            CronTimeQueue = CronTimeQueue.Except(dueCronTimes).OrderBy(z => z.Time).ToList();
+            LastFiredSchedule = dueCronTimes.OrderByDescending(z => z.Time).First();
         }
 
         private void SendCallbackToClient()
@@ -103,16 +111,16 @@ namespace Rogero.SchedulingLibrary.Scheduling
 
         private void TopOfCronTimeQueue()
         {
-            var currentQueueSize = _cronTimeQueue.Count;
+            var currentQueueSize = CronTimeQueue.Count;
             var newCronTimesNeeded = _desiredCronQueueSize - currentQueueSize;
-            var lastCronTime = _cronTimeQueue.LastOrDefault() ?? new CronTime(_cronTemplate, _dateTimeRepository.Now());
+            var lastCronTime = CronTimeQueue.LastOrDefault() ?? new CronTime(_cronTemplate, _dateTimeRepository.Now());
             var newCronTimes = CronTimeGenerator.Generate(lastCronTime).Take(newCronTimesNeeded);
-            _cronTimeQueue.AddRange(newCronTimes);
+            CronTimeQueue.AddRange(newCronTimes);
         }
 
         private void SetNextRunTime()
         {
-            var timeUntilFirstDue = _cronTimeQueue.First().DateTime.Value.Subtract(_dateTimeRepository.Now());
+            var timeUntilFirstDue = CronTimeQueue.First().DateTime.Value.Subtract(_dateTimeRepository.Now());
 
             var timeUntilTimerFires = (timeUntilFirstDue < TimeSpan.FromMilliseconds(300))
                 ? timeUntilFirstDue
