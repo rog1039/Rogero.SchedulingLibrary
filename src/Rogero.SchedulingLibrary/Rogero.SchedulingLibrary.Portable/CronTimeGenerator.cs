@@ -4,7 +4,7 @@ using System.Linq;
 
 namespace Rogero.SchedulingLibrary
 {
-    public class CronTimeGenerator
+    public static class CronTimeGenerator
     {
         public static IEnumerable<CronTime> Generate(CronTime cronTime)
         {
@@ -12,6 +12,43 @@ namespace Rogero.SchedulingLibrary
             {
                 cronTime = cronTime.GetNext();
                 yield return cronTime;
+            }
+        }
+
+        public static IEnumerable<CronTime> ForTime(this IEnumerable<CronTime> cronTimes, TimeSpan timeSpan)
+        {
+            var startingCronTime = cronTimes.First();
+            var cutoffTime = startingCronTime.Time.ToDateTime().Value + timeSpan;
+            foreach (var cronTime in cronTimes)
+            {
+                if (cronTime.DateTime.Value > cutoffTime) yield break;
+                yield return cronTime;
+            }
+        }
+
+        public static IEnumerable<CronTime> ForLesserOf(this IEnumerable<CronTime> cronTimes, TimeSpan timeSpan, int maxReturned)
+        {
+            return cronTimes.ForTime(timeSpan).Take(maxReturned);
+        }
+
+        public static IEnumerable<CronTime> ForLesserOfWithMinimum(this IEnumerable<CronTime> cronTimes, TimeSpan timeSpan, int maxReturned, int minReturned)
+        {
+            var count = 0;
+            //Provide at minimum number....
+            foreach (var cronTime in cronTimes)
+            {
+                if (count >= minReturned) break;
+                yield return cronTime;
+                count++;
+            }
+
+            var cutoffTime = cronTimes.First().Time.ToDateTime().Value + timeSpan;
+            foreach (var cronTime in cronTimes)
+            {
+                if (count >= maxReturned) yield break;
+                if (cronTime.DateTime.Value > cutoffTime) yield break;
+                yield return cronTime;
+                count++;
             }
         }
 
@@ -50,40 +87,11 @@ namespace Rogero.SchedulingLibrary
         }
     }
 
-    public class CronTimeAggregateGenerator
+    public static class CronTimeAggregateGenerator
     {
         public static IEnumerable<CronTime> Generate(DateTime dateTime, params CronTemplate[] cronTemplates)
         {
             var cronTimePriorityList = CreateCronTimePriorityQueue(dateTime, cronTemplates);
-
-            while (true)
-            {
-                var firstEntry = cronTimePriorityList.First();
-                var newEntry = firstEntry.Key.GetNext();
-                cronTimePriorityList.Add(newEntry, firstEntry.Value);
-                yield return firstEntry.Key;
-            }
-        }
-
-        private static SortedDictionary<CronTime, int> CreateCronTimePriorityQueue(DateTime dateTime, CronTemplate[] cronTemplates)
-        {
-            var cronTimes = cronTemplates.Select(template => new CronTime(template, dateTime));
-            SortedDictionary<CronTime, int> priorityQueue = new SortedDictionary<CronTime, int>();
-            
-            //Seed priority list
-            var initialEntries = cronTimes
-                .Select(((cronTime, index) => new KeyValuePair<CronTime, int>(cronTime, index)))
-                .ToList();
-            foreach (var initialEntry in initialEntries)
-            {
-                priorityQueue.Add(initialEntry.Key, initialEntry.Value);
-            }
-            return priorityQueue;
-        }
-
-        public static IEnumerable<CronTime> Generate2(DateTime dateTime, params CronTemplate[] cronTemplates)
-        {
-            var cronTimePriorityList = CreateCronTimePriorityQueue2(dateTime, cronTemplates);
 
             while (true)
             {
@@ -95,7 +103,7 @@ namespace Rogero.SchedulingLibrary
             }
         }
 
-        private static SortedSet<CronTime> CreateCronTimePriorityQueue2(DateTime dateTime, CronTemplate[] cronTemplates)
+        private static SortedSet<CronTime> CreateCronTimePriorityQueue(DateTime dateTime, CronTemplate[] cronTemplates)
         {
             var cronTimes = cronTemplates.Select(template => new CronTime(template, dateTime));
             SortedSet<CronTime> priorityQueue = new SortedSet<CronTime>(cronTimes);
