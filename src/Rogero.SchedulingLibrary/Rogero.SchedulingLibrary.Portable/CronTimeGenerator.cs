@@ -90,6 +90,7 @@ namespace Rogero.SchedulingLibrary
                 var firstEntry = cronTimePriorityList.First();
                 var newEntry = firstEntry.GetNext();
                 cronTimePriorityList.Add(newEntry);
+                cronTimePriorityList.Remove(firstEntry);
                 yield return firstEntry;
             }
         }

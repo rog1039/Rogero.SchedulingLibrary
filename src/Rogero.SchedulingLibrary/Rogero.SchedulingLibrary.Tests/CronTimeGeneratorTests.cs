@@ -108,4 +108,36 @@ namespace Rogero.SchedulingLibrary.Tests
             nextTimes.First().DateTime.Value.Should().Be(new DateTime(2016, 03, 29, 09, 45, 0));
         }
     }
+
+    public class CronTimeAggregateGeneratorTests
+    {
+        [Fact()]
+        [Trait("Category", "Instant")]
+        public void GenerateFromMultipleCronTemplates()
+        {
+            var breakTemplate = new CronTemplateBuilder()
+                .WithMinutes(0, 15, 30)
+                .WithHours(9, 14)
+                .WithAllDaysOfMonth()
+                .WithDaysOfWeek(1, 2, 3, 4, 5)
+                .WithAllMonths()
+                .BuildCronTemplate();
+
+            var hourlyTemplate = new CronTemplateBuilder()
+                .WithMinutes(0)
+                .WithHours(11,12,13,16,17)
+                .WithAllDaysOfMonth()
+                .WithDaysOfWeek(1, 2, 3, 4, 5)
+                .WithAllMonths()
+                .BuildCronTemplate();
+
+            var nextTimes = CronTimeAggregateGenerator
+                .Generate2(new DateTime(2016, 01, 01), breakTemplate, hourlyTemplate)
+                .Take(300);
+            foreach (var nextTime in nextTimes)
+            {
+                Console.WriteLine(nextTime.DateTime.Value.ToString("yyyy-MM-dd  hh:mm:ss tt  dddd"));
+            }
+        }
+    }
 }
