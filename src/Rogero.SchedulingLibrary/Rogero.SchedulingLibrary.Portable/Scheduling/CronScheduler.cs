@@ -1,12 +1,33 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reactive;
 using System.Reactive.Concurrency;
+using System.Reactive.Subjects;
 using System.Threading.Tasks;
 using Rogero.Option;
 
 namespace Rogero.SchedulingLibrary.Scheduling
 {
+    public class CronSchedulerReactive
+    {
+        private bool _schedulerStarted = false;
+
+        private readonly Subject<Unit> _schedulerCallbackObservable = new Subject<Unit>();
+        private readonly CronSchedulerCallback _cronSchedulerCallback;
+
+        public CronSchedulerReactive(IDateTimeRepository dateTimeRepository, IScheduler scheduler, CronTemplate cronTemplate)
+        {
+            _cronSchedulerCallback = new CronSchedulerCallback(dateTimeRepository, scheduler, cronTemplate);
+        }
+
+        public IObservable<Unit> GetSchedulerObservable()
+        {
+            if(!_schedulerStarted) _cronSchedulerCallback.Start(() => _schedulerCallbackObservable.OnNext(Unit.Default));
+            return _schedulerCallbackObservable;
+        }
+    }
+
     public class CronSchedulerCallback
     {
         private readonly IDateTimeRepository _dateTimeRepository;
