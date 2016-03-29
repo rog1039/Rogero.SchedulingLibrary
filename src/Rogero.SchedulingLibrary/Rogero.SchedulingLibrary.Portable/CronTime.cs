@@ -31,6 +31,12 @@ namespace Rogero.SchedulingLibrary
                 if (validCronTime.HasValue) Time = validCronTime.Value.Time;
             }
         }
+
+        public CronTime AdvanceTo(DateTime dateTime)
+        {
+            var cronTime = new CronTime(CronTemplate, dateTime);
+            return cronTime;
+        }
         
         public CronTime GetNext()
         {
