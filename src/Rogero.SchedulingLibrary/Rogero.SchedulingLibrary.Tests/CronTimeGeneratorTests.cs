@@ -87,4 +87,28 @@ namespace Rogero.SchedulingLibrary.Tests
             }
         }
     }
+
+    public class GeneratorTests2
+    {
+        [Fact()]
+        [Trait("Category", "Instant")]
+        public void MethodName()
+        {
+            var nextTimes = CronTimeGenerator.Generate(
+                new CronTime(
+                    new CronTemplateBuilder().WithMinutes(0, 45)
+                        .WithAllHours()
+                        .WithAllDaysOfMonth()
+                        .WithAllDaysOfWeek()
+                        .WithAllMonths()
+                        .BuildCronTemplate(), new DateTime(2016, 03, 29, 09, 30, 0), false)).Take(5);
+
+            foreach (var nextTime in nextTimes)
+            {
+                Console.WriteLine(nextTime.DateTime.Value.ToString("O"));
+            }
+
+            nextTimes.First().DateTime.Value.Should().Be(new DateTime(2016, 03, 29, 09, 45, 0));
+        }
+    }
 }

@@ -9,21 +9,27 @@ namespace Rogero.SchedulingLibrary
         public Time Time { get; }
         public DateTime? DateTime => Time.ToDateTime();
 
-        public CronTime(CronTemplate cronTemplate, Time time)
+        public CronTime(CronTemplate cronTemplate, Time time, bool forceToValidCronTime = true)
         {
             CronTemplate = cronTemplate;
             Time = time;
 
-            var validCronTime = CronTimeValidator.GetNextCronTimeThatFitsTheTemplate(this);
-            if (validCronTime.HasValue) Time = validCronTime.Value.Time;
+            if (forceToValidCronTime)
+            {
+                var validCronTime = CronTimeValidator.GetNextCronTimeThatFitsTheTemplate(this);
+                if (validCronTime.HasValue) Time = validCronTime.Value.Time;
+            }
         }
 
-        public CronTime(CronTemplate cronTemplate, DateTime datetime)
+        public CronTime(CronTemplate cronTemplate, DateTime datetime, bool forceToValidCronTime = true)
         {
             CronTemplate = cronTemplate;
             Time = new Time(datetime);
-            var validCronTime = CronTimeValidator.GetNextCronTimeThatFitsTheTemplate(this);
-            if (validCronTime.HasValue) Time = validCronTime.Value.Time;
+            if (forceToValidCronTime)
+            {
+                var validCronTime = CronTimeValidator.GetNextCronTimeThatFitsTheTemplate(this);
+                if (validCronTime.HasValue) Time = validCronTime.Value.Time;
+            }
         }
         
         public CronTime GetNext()
