@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Rogero.SchedulingLibrary
 {
@@ -46,6 +47,58 @@ namespace Rogero.SchedulingLibrary
                 if (count > minCount && cronTime > time) yield break;
                 yield return cronTime;
             }
+        }
+    }
+
+    public class CronTimeAggregateGenerator
+    {
+        public static IEnumerable<CronTime> Generate(DateTime dateTime, params CronTemplate[] cronTemplates)
+        {
+            var cronTimePriorityList = CreateCronTimePriorityQueue(dateTime, cronTemplates);
+
+            while (true)
+            {
+                var firstEntry = cronTimePriorityList.First();
+                var newEntry = firstEntry.Key.GetNext();
+                cronTimePriorityList.Add(newEntry, firstEntry.Value);
+                yield return firstEntry.Key;
+            }
+        }
+
+        private static SortedDictionary<CronTime, int> CreateCronTimePriorityQueue(DateTime dateTime, CronTemplate[] cronTemplates)
+        {
+            var cronTimes = cronTemplates.Select(template => new CronTime(template, dateTime));
+            SortedDictionary<CronTime, int> priorityQueue = new SortedDictionary<CronTime, int>();
+            
+            //Seed priority list
+            var initialEntries = cronTimes
+                .Select(((cronTime, index) => new KeyValuePair<CronTime, int>(cronTime, index)))
+                .ToList();
+            foreach (var initialEntry in initialEntries)
+            {
+                priorityQueue.Add(initialEntry.Key, initialEntry.Value);
+            }
+            return priorityQueue;
+        }
+
+        public static IEnumerable<CronTime> Generate2(DateTime dateTime, params CronTemplate[] cronTemplates)
+        {
+            var cronTimePriorityList = CreateCronTimePriorityQueue2(dateTime, cronTemplates);
+
+            while (true)
+            {
+                var firstEntry = cronTimePriorityList.First();
+                var newEntry = firstEntry.GetNext();
+                cronTimePriorityList.Add(newEntry);
+                yield return firstEntry;
+            }
+        }
+
+        private static SortedSet<CronTime> CreateCronTimePriorityQueue2(DateTime dateTime, CronTemplate[] cronTemplates)
+        {
+            var cronTimes = cronTemplates.Select(template => new CronTime(template, dateTime));
+            SortedSet<CronTime> priorityQueue = new SortedSet<CronTime>(cronTimes);
+            return priorityQueue;
         }
     }
 }
