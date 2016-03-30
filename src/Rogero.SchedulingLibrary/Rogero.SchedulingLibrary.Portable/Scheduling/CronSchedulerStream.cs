@@ -55,10 +55,11 @@ namespace Rogero.SchedulingLibrary.Scheduling
             {
                 Logger.Log($"{GetNowTimestampForLogging()} >>> Beginning while loop inside of SetCallback");
                 _nextCronTime = _internalStream.Current;
+                Logger.Log($"{GetNowTimestampForLogging()} >>> _nextCronTime = {_nextCronTime.DateTime.Value.ToString("yyyy-MM-dd  hh:mm:ss tt")}");
                 Logger.Log($"{GetNowTimestampForLogging()} >>> Determining of the _nextCronTimeIsValid");
                 var nextCronTimeValid = _nextCronTime.DateTime.HasValue &&
                                         _nextCronTime.DateTime.Value >= _dateTimeRepository.Now();
-                Logger.Log($"C");
+                Logger.Log($"{GetNowTimestampForLogging()} >>> _nextCronTimeIsValid = {nextCronTimeValid}");
                 if (nextCronTimeValid)
                 {
                     Logger.Log($"{GetNowTimestampForLogging()} >>> Next callback is valid and setting a callback for {_nextCronTime.DateTime.Value}");
@@ -77,7 +78,6 @@ namespace Rogero.SchedulingLibrary.Scheduling
                     }
 
                     Logger.Log($"{GetNowTimestampForLogging()} >>> Successfully MovedNext() to begin the while loop again.");
-                    return;
                 }
                 
             }
