@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Reactive.Concurrency;
 using System.Threading.Tasks;
 using Rogero.SchedulingLibrary.Infrastructure;
@@ -29,10 +30,17 @@ namespace Rogero.SchedulingLibrary.Scheduling
 
         public void Start(Action<CronTime> eventCallback)
         {
-            Logger.Log($"{GetNowTimestampForLogging()} >>> Public start called");
-            _eventCallback = eventCallback;
-            _internalStream = _cronTimeStream.AdvanceTo(_dateTimeRepository.Now()).GetEnumerator();
-            SetCallback();
+            try
+            {
+                Logger.Log($"{GetNowTimestampForLogging()} >>> Public start called");
+                _eventCallback = eventCallback;
+                _internalStream = _cronTimeStream.AdvanceTo(_dateTimeRepository.Now()).GetEnumerator();
+                SetCallback();
+            }
+            catch (Exception e)
+            {
+                Debug.WriteLine(e);
+            }
         }
 
         private void SetCallback()
