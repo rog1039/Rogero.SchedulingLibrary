@@ -53,9 +53,12 @@ namespace Rogero.SchedulingLibrary.Scheduling
             }
             while (true)
             {
+                Logger.Log($"A");
                 _nextCronTime = _internalStream.Current;
+                Logger.Log($"B");
                 var nextCronTimeValid = _nextCronTime.DateTime.HasValue &&
                                         _nextCronTime.DateTime.Value >= _dateTimeRepository.Now();
+                Logger.Log($"C");
                 if (nextCronTimeValid)
                 {
                     Logger.Log($"{GetNowTimestampForLogging()} >>> Next callback is valid and setting a callback for {_nextCronTime.DateTime.Value}");
@@ -80,6 +83,7 @@ namespace Rogero.SchedulingLibrary.Scheduling
 
         private void SetCallback(CronTime nextCronTime)
         {
+            Logger.Log($"D");
             var timeUntilDue = nextCronTime.DateTime.Value - _dateTimeRepository.Now();
             _scheduler.Schedule(new object(), timeUntilDue, (scheduler, state) => SendEvent());
         }
