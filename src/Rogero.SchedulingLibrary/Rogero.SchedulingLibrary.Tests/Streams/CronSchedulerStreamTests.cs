@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading;
@@ -13,8 +14,8 @@ namespace Rogero.SchedulingLibrary.Tests.Streams
 {
     public class CronSchedulerStreamTests
     {
-        CronTimeStreamBase _simpleStreamBase;
-        CronTimeStreamBase _complexStreamBase;
+        readonly CronTimeStreamBase _simpleStreamBase;
+        readonly CronTimeStreamBase _complexStreamBase;
 
         private readonly TestScheduler _testScheduler = new TestScheduler();
         private readonly IDateTimeRepository _dateTimeRepository;
@@ -62,24 +63,7 @@ namespace Rogero.SchedulingLibrary.Tests.Streams
             _testScheduler.AdvanceBy(TimeSpan.FromHours(91).Ticks);
             Debug.WriteLine(_testScheduler.Now);
             Thread.Sleep(100);
-            callbackCount.Should().Be(23);
-        }
-
-        [Fact()]
-        [Trait("Category", "Instant")]
-        public void TestStreamWithEnd()
-        {
-            var callbackCount = 0;
-            Logger.LogAction = z => Debug.WriteLine(z);
-            _simpleScheduler.Start((cronTime) =>
-            {
-                //Debug.WriteLine($"Client notified:  {_dateTimeRepository.Now():O}");
-                callbackCount++;
-            });
-            _testScheduler.AdvanceBy(TimeSpan.FromHours(91).Ticks);
-            Debug.WriteLine(_testScheduler.Now);
-            Thread.Sleep(100);
-            callbackCount.Should().Be(23);
+            callbackCount.Should().Be(24);
         }
 
         [Fact()]
@@ -88,14 +72,22 @@ namespace Rogero.SchedulingLibrary.Tests.Streams
         {
             var callbackCount = 0;
             Logger.LogAction = z => Debug.WriteLine(z);
+            var cronTimeEvents = new List<CronTime>();
             _complexScheduler.Start((cronTime) =>
             {
                 callbackCount++;
+                cronTimeEvents.Add(cronTime);
             });
 
             _testScheduler.AdvanceBy(TimeSpan.FromHours(48).Ticks);
             Thread.Sleep(1000);
             callbackCount.Should().Be(22);
+            Console.WriteLine("Printing received events");
+            foreach (var cronTimeEvent in cronTimeEvents)
+            {
+                Debug.WriteLine($"{cronTimeEvent.DateTime.Value.ToString("yyyy-MM-dd  hh:mm:ss tt")}");
+            }
+            Console.WriteLine("Ending received events");
 
             foreach (var cronTime in _complexScheduler.UpcomingEvents.Take(11))
             {

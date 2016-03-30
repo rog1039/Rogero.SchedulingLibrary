@@ -7,7 +7,6 @@ namespace Rogero.SchedulingLibrary.Generators
 {
     public static class CronTimeSeriesExtensionMethods
     {
-
         public static IEnumerable<CronTime> ForTime(this IEnumerable<CronTime> cronTimes, TimeSpan timeSpan)
         {
             var startingCronTime = cronTimes.First();

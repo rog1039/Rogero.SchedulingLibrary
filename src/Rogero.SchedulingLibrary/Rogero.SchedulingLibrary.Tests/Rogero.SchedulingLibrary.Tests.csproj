@@ -90,6 +90,7 @@
   <ItemGroup>
     <Compile Include="CronTemplateBuilderTests.cs" />
     <Compile Include="Generators\CronTimeAggregateGeneratorTests.cs" />
+    <Compile Include="Scheduling\CronSchedulerStreamReactiveTests.cs" />
     <Compile Include="Streams\CronSchedulerStreamTests.cs" />
     <Compile Include="CronTimeTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

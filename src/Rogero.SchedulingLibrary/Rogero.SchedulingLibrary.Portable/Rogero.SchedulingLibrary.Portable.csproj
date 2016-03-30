@@ -46,6 +46,7 @@
     <Compile Include="CronTime.cs" />
     <Compile Include="CronTimeValidator.cs" />
     <Compile Include="Scheduling\CronSchedulerReactive.cs" />
+    <Compile Include="Scheduling\CronSchedulerStream.cs" />
     <Compile Include="Streams\CronTimeStreamBase.cs" />
     <Compile Include="Streams\CronTimeStreamComplex.cs" />
     <Compile Include="Streams\CronTimeStreamSimple.cs" />

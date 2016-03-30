@@ -10,7 +10,7 @@ namespace Rogero.SchedulingLibrary.Streams
 
         public CronTimeStreamSimple(CronTemplate template, DateTime datetime)
         {
-            _cronTime = new CronTime(template, datetime);
+            _cronTime = new CronTime(template, datetime, forceToValidCronTime: false);
         }
 
         public override CronTimeStreamBase AdvanceTo(DateTime dateTime)
