@@ -4,7 +4,7 @@ using Xunit;
 
 namespace Rogero.SchedulingLibrary.Tests
 {
-    public class CronTimeIncrementorTests
+    public class CronTimeTests
     {
         private CronTemplate template =
             new CronTemplateBuilder()
@@ -26,7 +26,7 @@ namespace Rogero.SchedulingLibrary.Tests
 
         private CronTime time;
 
-        public CronTimeIncrementorTests()
+        public CronTimeTests()
         {
             time = new CronTime(template, new DateTime(2016, 1, 1, 6, 10, 10));
         }

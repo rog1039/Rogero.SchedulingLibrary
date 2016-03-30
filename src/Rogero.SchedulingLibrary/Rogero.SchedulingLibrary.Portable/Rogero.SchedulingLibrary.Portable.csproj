@@ -44,7 +44,6 @@
     <Compile Include="CronTemplate.cs" />
     <Compile Include="CronTemplateBuilder.cs" />
     <Compile Include="CronTime.cs" />
-    <Compile Include="Generators\CronTimeGenerator.cs" />
     <Compile Include="CronTimeValidator.cs" />
     <Compile Include="Scheduling\CronSchedulerReactive.cs" />
     <Compile Include="Streams\CronTimeStreamBase.cs" />
