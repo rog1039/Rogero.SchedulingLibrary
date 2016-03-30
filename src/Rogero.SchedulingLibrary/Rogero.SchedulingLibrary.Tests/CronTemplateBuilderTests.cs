@@ -1,9 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
-using System.Reactive.Concurrency;
-using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
 using FluentAssertions;
 using Microsoft.Reactive.Testing;
 using Rogero.SchedulingLibrary.Infrastructure;

@@ -8,7 +8,6 @@ using Rogero.SchedulingLibrary.Infrastructure;
 using Rogero.SchedulingLibrary.Scheduling;
 using Rogero.SchedulingLibrary.Streams;
 using Xunit;
-using Xunit.Abstractions;
 
 namespace Rogero.SchedulingLibrary.Tests
 {
