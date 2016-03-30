@@ -6,6 +6,7 @@ namespace Rogero.SchedulingLibrary.Generators
 {
     public static class CronTimeSeriesExtensionMethods
     {
+
         public static IEnumerable<CronTime> ForTime(this IEnumerable<CronTime> cronTimes, TimeSpan timeSpan)
         {
             var startingCronTime = cronTimes.First();
@@ -22,24 +23,23 @@ namespace Rogero.SchedulingLibrary.Generators
             return cronTimes.ForTime(timeSpan).Take(maxReturned);
         }
 
-        public static IEnumerable<CronTime> ForLesserOfWithMinimum(this IEnumerable<CronTime> cronTimes, TimeSpan timeSpan, int maxReturned, int minReturned)
+        public static IEnumerable<CronTime> ForLesserOfWithMinimum(this IEnumerable<CronTime> cronTimes, TimeSpan timeSpan, int count, int minReturned)
         {
-            var count = 0;
-            //Provide at minimum number....
-            foreach (var cronTime in cronTimes)
-            {
-                if (count >= minReturned) break;
-                yield return cronTime;
-                count++;
-            }
-
+            var iterationCount = 0;
             var cutoffTime = cronTimes.First().Time.ToDateTime().Value + timeSpan;
             foreach (var cronTime in cronTimes)
             {
-                if (count >= maxReturned) yield break;
-                if (cronTime.DateTime.Value > cutoffTime) yield break;
-                yield return cronTime;
-                count++;
+                if (iterationCount < minReturned)
+                {
+                    yield return cronTime;
+                }
+                else
+                {
+                    if (iterationCount >= count) yield break;
+                    if (cronTime.DateTime.Value > cutoffTime) yield break;
+                    yield return cronTime;
+                }
+                iterationCount++;
             }
         }
     }

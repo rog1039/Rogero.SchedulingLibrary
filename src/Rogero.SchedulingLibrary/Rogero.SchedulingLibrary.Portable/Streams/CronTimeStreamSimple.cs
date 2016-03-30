@@ -20,7 +20,7 @@ namespace Rogero.SchedulingLibrary.Streams
 
         public override IEnumerator<CronTime> GetEnumerator()
         {
-            return CronTimeGenerator.Generate(_cronTime).GetEnumerator();
+            return _cronTime.ToSeries().GetEnumerator();
         }
     }
 }

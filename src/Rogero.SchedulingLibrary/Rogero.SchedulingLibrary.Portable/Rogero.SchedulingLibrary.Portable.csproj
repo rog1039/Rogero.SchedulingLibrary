@@ -37,6 +37,7 @@
     <Compile Include="CronTime.Equals.cs" />
     <Compile Include="Generators\CronTimeAggregateGenerator.cs" />
     <Compile Include="CronTimeAnalysis.cs" />
+    <Compile Include="Generators\CronTimeExtensionMethods.cs" />
     <Compile Include="Generators\CronTimeSeriesExtensionMethods.cs" />
     <Compile Include="Infrastructure\Logger.cs" />
     <Compile Include="Scheduling\CronScheduler.cs" />

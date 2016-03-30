@@ -46,9 +46,9 @@ namespace Rogero.SchedulingLibrary.Scheduling
         private void CreateCronTimeQueue()
         {
             _cronTime = new CronTime(_cronTemplate, _dateTimeRepository.Now());
-            var cronTimes = CronTimeGenerator.CreateByLesserOfTimeSpanOrCountWithMinimum(_cronTime,
-                                                                                         TimeSpan.FromMinutes(5), 10,
-                                                                                         _desiredCronQueueSize);
+            var cronTimes = _cronTime
+                .ToSeries()
+                .ForLesserOfWithMinimum(TimeSpan.FromMinutes(5), count: 10, minReturned: _desiredCronQueueSize);
             CronTimeQueue.AddRange(cronTimes);
             CronTimeQueue = CronTimeQueue.OrderBy(z => z.Time).ToList();
         }
@@ -92,7 +92,7 @@ namespace Rogero.SchedulingLibrary.Scheduling
             var currentQueueSize = CronTimeQueue.Count;
             var newCronTimesNeeded = _desiredCronQueueSize - currentQueueSize;
             var lastCronTime = CronTimeQueue.LastOrDefault() ?? new CronTime(_cronTemplate, _dateTimeRepository.Now());
-            var newCronTimes = CronTimeGenerator.Generate(lastCronTime).Take(newCronTimesNeeded);
+            var newCronTimes = lastCronTime.ToSeries().Take(newCronTimesNeeded);
             CronTimeQueue.AddRange(newCronTimes);
         }
 
