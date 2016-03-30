@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+// ReSharper disable IteratorNeverReturns
 
 namespace Rogero.SchedulingLibrary.Generators
 {

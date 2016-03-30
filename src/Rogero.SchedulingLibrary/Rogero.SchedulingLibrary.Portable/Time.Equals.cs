@@ -52,7 +52,7 @@
 
         public int CompareTo(Time time)
         {
-            int result = 0;
+            int result;
             result = Year.CompareTo(time.Year);
             if (result != 0) return result;
             result = Month.CompareTo(time.Month);

@@ -108,14 +108,13 @@ namespace Rogero.SchedulingLibrary.Scheduling
 
         private static TimeSpan MultipleTimespanByConstant(TimeSpan timeUntilFirstDue, double factor)
         {
-            return new TimeSpan((long) ((double) timeUntilFirstDue.Ticks*factor));
+            return new TimeSpan((long) (timeUntilFirstDue.Ticks*factor));
         }
 
         private void SetTimer(TimeSpan timeUntilTimerFires)
         {
             Logger.Log($"Set Timer:        {timeUntilTimerFires:G}");
-            var stateToIgnore = (object) null;
-            _scheduler.Schedule(new object(), timeUntilTimerFires, (x, y) => Start());
+            _scheduler.Schedule(state: (object)null, dueTime: timeUntilTimerFires, action: (x, y) => Start());
         }
     }
 
@@ -127,7 +126,6 @@ namespace Rogero.SchedulingLibrary.Scheduling
         private readonly IDateTimeRepository _dateTimeRepository;
         private readonly IScheduler _scheduler;
         private readonly CronTimeStreamBase _cronTimeStream;
-        private static int _desiredCronQueueSize = 100;
 
         private Action<CronTime> _eventCallback;
         private IEnumerator<CronTime> _internalStream;

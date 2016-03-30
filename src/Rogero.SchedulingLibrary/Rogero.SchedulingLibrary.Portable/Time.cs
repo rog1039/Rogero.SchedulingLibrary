@@ -61,7 +61,7 @@ namespace Rogero.SchedulingLibrary
                 var date = new DateTime(Year, Month, Day, Hour, Minute, 0);
                 return date;
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 return null;
             }

@@ -6,7 +6,7 @@ namespace Rogero.SchedulingLibrary.Streams
 {
     public class CronTimeStreamSimple : CronTimeStreamBase
     {
-        private CronTime _cronTime;
+        private readonly CronTime _cronTime;
 
         public CronTimeStreamSimple(CronTemplate template, DateTime datetime)
         {

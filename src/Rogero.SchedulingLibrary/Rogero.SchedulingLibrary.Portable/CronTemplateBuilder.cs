@@ -7,80 +7,80 @@ namespace Rogero.SchedulingLibrary
 {
     public class CronTemplateBuilder
     {
-        private IList<int> Minutes;
-        private IList<int> Hours;
-        private IList<int> DaysOfMonth;
-        private IList<int> Months;
-        private IList<int> DaysOfWeek;
+        private IList<int> _minutes;
+        private IList<int> _hours;
+        private IList<int> _daysOfMonth;
+        private IList<int> _months;
+        private IList<int> _daysOfWeek;
 
         public CronTemplateBuilder WithAllMinutes()
         {
-            Minutes = ZeroTo59;
+            _minutes = ZeroTo59;
             return this;
         }
 
         public CronTemplateBuilder WithMinutes(params int[] minutes)
         {
             ArrayMustHaveLengthGreaterThanZero(minutes);
-            Minutes = new List<int>(minutes);
+            _minutes = new List<int>(minutes);
             return this;
         }
 
         public CronTemplateBuilder WithAllHours()
         {
-            Hours = ZeroTo23;
+            _hours = ZeroTo23;
             return this;
         }
 
         public CronTemplateBuilder WithHours(params int[] hours)
         {
             ArrayMustHaveLengthGreaterThanZero(hours);
-            Hours = new List<int>(hours);
+            _hours = new List<int>(hours);
             return this;
         }
 
         public CronTemplateBuilder WithAllDaysOfMonth()
         {
-            DaysOfMonth = OneTo31;
+            _daysOfMonth = OneTo31;
             return this;
         }
 
         public CronTemplateBuilder WithDaysOfMonth(params int[] daysOfMonth)
         {
             ArrayMustHaveLengthGreaterThanZero(daysOfMonth);
-            DaysOfMonth = new List<int>(daysOfMonth);
+            _daysOfMonth = new List<int>(daysOfMonth);
             return this;
         }
 
         public CronTemplateBuilder WithAllMonths()
         {
-            Months = OneTo12;
+            _months = OneTo12;
             return this;
         }
 
         public CronTemplateBuilder WithMonths(params int[] months)
         {
             ArrayMustHaveLengthGreaterThanZero(months);
-            Months = new List<int>(months);
+            _months = new List<int>(months);
             return this;
         }
 
         public CronTemplateBuilder WithAllDaysOfWeek()
         {
-            DaysOfWeek = ZeroTo6;
+            _daysOfWeek = ZeroTo6;
             return this;
         }
 
         public CronTemplateBuilder WithWeekDays()
         {
-            DaysOfWeek = OneTo5;
+            _daysOfWeek = OneTo5;
             return this;
         }
 
         public CronTemplateBuilder WithDaysOfWeek(params int[] daysOfWeek)
         {
             ArrayMustHaveLengthGreaterThanZero(daysOfWeek);
-            DaysOfWeek = new List<int>(daysOfWeek);
+            _daysOfWeek = new List<int>(daysOfWeek);
             return this;
         }
 
@@ -92,10 +92,10 @@ namespace Rogero.SchedulingLibrary
 
         public CronTemplate BuildCronTemplate()
         {
-            if(Minutes == null || Hours == null || DaysOfMonth == null || Months == null || DaysOfWeek == null) 
+            if(_minutes == null || _hours == null || _daysOfMonth == null || _months == null || _daysOfWeek == null) 
                 throw new ArgumentNullException("Values must be provided for all sections of the CronTemplate: Minutes, Hours, DaysOfMonth, Months, and DaysOfWeek");
 
-            return new CronTemplate(Minutes, Hours, DaysOfMonth, Months, DaysOfWeek);
+            return new CronTemplate(_minutes, _hours, _daysOfMonth, _months, _daysOfWeek);
         }
 
         private static readonly IList<int> ZeroTo59 = Enumerable.Range(0, 60).ToList();

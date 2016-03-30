@@ -18,8 +18,8 @@ namespace Rogero.SchedulingLibrary.Tests.Streams
 
         private readonly TestScheduler _testScheduler = new TestScheduler();
         private readonly IDateTimeRepository _dateTimeRepository;
-        private CronSchedulerStream _simpleScheduler;
-        private CronSchedulerStream _complexScheduler;
+        private readonly CronSchedulerStream _simpleScheduler;
+        private readonly CronSchedulerStream _complexScheduler;
 
         public CronSchedulerStreamTests()
         {

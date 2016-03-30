@@ -9,7 +9,7 @@ namespace Rogero.SchedulingLibrary.Tests.Generators
 {
     public class CronTimeAggregateGeneratorTests
     {
-        private IEnumerable<CronTime> _nextTimes;
+        private readonly IEnumerable<CronTime> _nextTimes;
 
         public CronTimeAggregateGeneratorTests()
         {
