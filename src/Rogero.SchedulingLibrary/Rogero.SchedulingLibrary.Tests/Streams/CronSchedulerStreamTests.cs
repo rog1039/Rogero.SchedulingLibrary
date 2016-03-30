@@ -9,7 +9,7 @@ using Rogero.SchedulingLibrary.Scheduling;
 using Rogero.SchedulingLibrary.Streams;
 using Xunit;
 
-namespace Rogero.SchedulingLibrary.Tests
+namespace Rogero.SchedulingLibrary.Tests.Streams
 {
     public class CronSchedulerStreamTests
     {

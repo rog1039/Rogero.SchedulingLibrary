@@ -5,7 +5,7 @@ using FluentAssertions;
 using Rogero.SchedulingLibrary.Generators;
 using Xunit;
 
-namespace Rogero.SchedulingLibrary.Tests
+namespace Rogero.SchedulingLibrary.Tests.Generators
 {
     public class CronTimeAggregateGeneratorTests
     {
