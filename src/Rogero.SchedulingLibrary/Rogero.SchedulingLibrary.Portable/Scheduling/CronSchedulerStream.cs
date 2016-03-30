@@ -92,7 +92,7 @@ namespace Rogero.SchedulingLibrary.Scheduling
         {
             
             var timeUntilDue = nextCronTime.DateTime.Value - _dateTimeRepository.Now();
-            Logger.Log($"{GetNowTimestampForLogging()} >>> Setting callback for {}.");
+            Logger.Log($"{GetNowTimestampForLogging()} >>> Setting callback for {timeUntilDue}.");
             _scheduler.Schedule(new object(), timeUntilDue, (scheduler, state) => SendEvent());
         }
 
