@@ -53,9 +53,9 @@ namespace Rogero.SchedulingLibrary.Scheduling
             }
             while (true)
             {
-                Logger.Log($"A");
+                Logger.Log($"{GetNowTimestampForLogging()} >>> Beginning while loop inside of SetCallback");
                 _nextCronTime = _internalStream.Current;
-                Logger.Log($"B");
+                Logger.Log($"{GetNowTimestampForLogging()} >>> Determining of the _nextCronTimeIsValid");
                 var nextCronTimeValid = _nextCronTime.DateTime.HasValue &&
                                         _nextCronTime.DateTime.Value >= _dateTimeRepository.Now();
                 Logger.Log($"C");
@@ -68,15 +68,15 @@ namespace Rogero.SchedulingLibrary.Scheduling
                 }
                 else
                 {
-                    Logger.Log($"E");
+                    Logger.Log($"{GetNowTimestampForLogging()} >>> Next callback time is invalid.");
                     var moveNextSuccessful = _internalStream.MoveNext();
                     if (!moveNextSuccessful)
                     {
-                        Logger.Log($"F");
+                        Logger.Log($"{GetNowTimestampForLogging()} >>> Attempted to move to next time and there were no elements.");
                         return;
                     }
 
-                    Logger.Log($"G");
+                    Logger.Log($"{GetNowTimestampForLogging()} >>> Successfully MovedNext() to begin the while loop again.");
                     return;
                 }
                 
