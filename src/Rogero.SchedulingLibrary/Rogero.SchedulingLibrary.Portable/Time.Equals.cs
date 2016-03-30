@@ -2,15 +2,6 @@
 {
     public partial class Time
     {
-        public static bool operator >(Time c1, Time c2)
-        {
-            return c1.ToDateTime() > c2.ToDateTime();
-        }
-
-        public static bool operator <(Time c1, Time c2)
-        {
-            return c1.ToDateTime() < c2.ToDateTime();
-        }
 
         public bool Equals(Time other)
         {
@@ -48,6 +39,26 @@
         public static bool operator !=(Time left, Time right)
         {
             return !Equals(left, right);
+        }
+
+        public static bool operator >(Time c1, Time c2)
+        {
+            return c1.ToDateTime() > c2.ToDateTime();
+        }
+
+        public static bool operator <(Time c1, Time c2)
+        {
+            return c1.ToDateTime() < c2.ToDateTime();
+        }
+
+        public static bool operator >=(Time c1, Time c2)
+        {
+            return c1.ToDateTime() >= c2.ToDateTime();
+        }
+
+        public static bool operator <=(Time c1, Time c2)
+        {
+            return c1.ToDateTime() <= c2.ToDateTime();
         }
 
         public int CompareTo(Time time)

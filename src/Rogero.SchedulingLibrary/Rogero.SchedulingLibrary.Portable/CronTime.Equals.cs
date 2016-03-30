@@ -45,6 +45,16 @@
             return c1.Time < c2.Time;
         }
 
+        public static bool operator >=(CronTime c1, CronTime c2)
+        {
+            return c1.Time >= c2.Time;
+        }
+
+        public static bool operator <=(CronTime c1, CronTime c2)
+        {
+            return c1.Time <= c2.Time;
+        }
+
         public int CompareTo(CronTime other)
         {
             return this.Time.CompareTo(other.Time);
