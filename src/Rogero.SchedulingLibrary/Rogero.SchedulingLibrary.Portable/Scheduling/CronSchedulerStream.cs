@@ -70,7 +70,13 @@ namespace Rogero.SchedulingLibrary.Scheduling
                 {
                     Logger.Log($"E");
                     var moveNextSuccessful = _internalStream.MoveNext();
-                    if (!moveNextSuccessful) return;
+                    if (!moveNextSuccessful)
+                    {
+                        Logger.Log($"F");
+                        return;
+                    }
+
+                    Logger.Log($"G");
                     return;
                 }
                 
