@@ -25,7 +25,7 @@ namespace Rogero.SchedulingLibrary.Scheduling
 
         private IObservable<Unit> GetSchedulerObservable()
         {
-            if(!_schedulerStarted) _cronSchedulerCallback.Start(() => _schedulerCallbackObservable.OnNext(Unit.Default));
+            if (!_schedulerStarted) _cronSchedulerCallback.Start(() => _schedulerCallbackObservable.OnNext(Unit.Default));
             return _schedulerCallbackObservable;
         }
     }
