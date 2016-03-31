@@ -22,7 +22,7 @@ namespace Rogero.SchedulingLibrary.Streams
 
         public override IEnumerator<CronTime> GetEnumerator()
         {
-            return CronTimeAggregateGenerator.Generate(_dateTime, _cronTemplates).GetEnumerator();
+            return CronTimeGenerator.Generate(_dateTime, _cronTemplates).GetEnumerator();
         }
     }
 }

@@ -40,13 +40,12 @@
     <Compile Include="Generators\CronTimeExtensionMethods.cs" />
     <Compile Include="Generators\CronTimeSeriesExtensionMethods.cs" />
     <Compile Include="Infrastructure\Logger.cs" />
-    <Compile Include="Scheduling\CronScheduler.cs" />
     <Compile Include="CronTemplate.cs" />
     <Compile Include="CronTemplateBuilder.cs" />
     <Compile Include="CronTime.cs" />
     <Compile Include="CronTimeValidator.cs" />
-    <Compile Include="Scheduling\CronSchedulerReactive.cs" />
-    <Compile Include="Scheduling\CronSchedulerStream.cs" />
+    <Compile Include="Scheduling\SchedulerReactive.cs" />
+    <Compile Include="Scheduling\Scheduler.cs" />
     <Compile Include="Streams\CronTimeStreamBase.cs" />
     <Compile Include="Streams\CronTimeStreamComplex.cs" />
     <Compile Include="Streams\CronTimeStreamSimple.cs" />

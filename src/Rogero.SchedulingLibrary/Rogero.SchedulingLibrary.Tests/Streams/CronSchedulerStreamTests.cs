@@ -19,8 +19,8 @@ namespace Rogero.SchedulingLibrary.Tests.Streams
 
         private readonly TestScheduler _testScheduler = new TestScheduler();
         private readonly IDateTimeRepository _dateTimeRepository;
-        private readonly CronSchedulerStream _simpleScheduler;
-        private readonly CronSchedulerStream _complexScheduler;
+        private readonly Scheduler _simpleScheduler;
+        private readonly Scheduler _complexScheduler;
 
         public CronSchedulerStreamTests()
         {
@@ -45,8 +45,8 @@ namespace Rogero.SchedulingLibrary.Tests.Streams
             _simpleStreamBase = new CronTimeStreamSimple(breakTemplate, DateTime.Now);
             _complexStreamBase = new CronTimeStreamComplex(DateTime.Now, breakTemplate, hourlyTemplate);
 
-            _simpleScheduler = new CronSchedulerStream(_dateTimeRepository, _testScheduler, _simpleStreamBase);
-            _complexScheduler = new CronSchedulerStream(_dateTimeRepository, _testScheduler, _complexStreamBase);
+            _simpleScheduler = new Scheduler(_dateTimeRepository, _testScheduler, _simpleStreamBase);
+            _complexScheduler = new Scheduler(_dateTimeRepository, _testScheduler, _complexStreamBase);
         }
 
         [Fact()]

@@ -8,7 +8,7 @@ using Rogero.SchedulingLibrary.Streams;
 
 namespace Rogero.SchedulingLibrary.Scheduling
 {
-    public class CronSchedulerStream
+    public class Scheduler
     {
         public IEnumerable<CronTime> UpcomingEvents => _cronTimeStream.AdvanceTo(_dateTimeRepository.Now());
         public CronTime LastFiredEvent { get; private set; }
@@ -21,7 +21,7 @@ namespace Rogero.SchedulingLibrary.Scheduling
         private IEnumerator<CronTime> _internalStream;
         private CronTime _nextCronTime;
 
-        public CronSchedulerStream(IDateTimeRepository dateTimeRepository,  IScheduler scheduler, CronTimeStreamBase cronTimeStream)
+        public Scheduler(IDateTimeRepository dateTimeRepository,  IScheduler scheduler, CronTimeStreamBase cronTimeStream)
         {
             _dateTimeRepository = dateTimeRepository;
             _scheduler = scheduler;

@@ -2,7 +2,7 @@
 
 namespace Rogero.SchedulingLibrary.Infrastructure
 {
-    public static class ListExtensionMethods
+    internal static class ListExtensionMethods
     {
         public static int ClosestLowerIndexOf(this IList<int> possibleValues, int value)
         {

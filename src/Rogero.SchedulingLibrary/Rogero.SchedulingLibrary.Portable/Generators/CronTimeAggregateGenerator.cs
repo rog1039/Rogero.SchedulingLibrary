@@ -7,31 +7,7 @@ using Rogero.Option;
 
 namespace Rogero.SchedulingLibrary.Generators
 {
-    public static class CronTimeAggregateGenerator
-    {
-        public static IEnumerable<CronTime> Generate(DateTime dateTime, params CronTemplate[] cronTemplates)
-        {
-            var cronTimePriorityList = CreateCronTimePriorityQueue(dateTime, cronTemplates);
-
-            while (true)
-            {
-                var firstEntry = cronTimePriorityList.First();
-                var newEntry = firstEntry.GetNext();
-                cronTimePriorityList.Add(newEntry);
-                cronTimePriorityList.Remove(firstEntry);
-                yield return firstEntry;
-            }
-        }
-
-        private static SortedSet<CronTime> CreateCronTimePriorityQueue(DateTime dateTime, CronTemplate[] cronTemplates)
-        {
-            var cronTimes = cronTemplates.Select(template => new CronTime(template, dateTime));
-            var priorityQueue = new SortedSet<CronTime>(cronTimes);
-            return priorityQueue;
-        }
-    }
-
-    public static class CronTimeAggregateGenerator2
+    public static class CronTimeGenerator
     {
         public static IEnumerable<CronTime> Generate(DateTime dateTime, params CronTemplate[] cronTemplates)
         {

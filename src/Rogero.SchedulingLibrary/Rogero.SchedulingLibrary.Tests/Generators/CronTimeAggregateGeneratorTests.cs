@@ -29,7 +29,7 @@ namespace Rogero.SchedulingLibrary.Tests.Generators
                 .WithAllMonths()
                 .Build();
 
-            _nextTimes = CronTimeAggregateGenerator2
+            _nextTimes = CronTimeGenerator
                 .Generate(new DateTime(2016, 01, 01), breakTemplate, hourlyTemplate);
         }
 
@@ -39,7 +39,7 @@ namespace Rogero.SchedulingLibrary.Tests.Generators
         {
             foreach (var nextTime in _nextTimes.Take(30000))
             {
-                Console.WriteLine(nextTime.DateTime.Value.ToString("yyyy-MM-dd  hh:mm:ss tt  dddd"));
+                //Console.WriteLine(nextTime.DateTime.Value.ToString("yyyy-MM-dd  hh:mm:ss tt  dddd"));
             }
         }
 
@@ -110,7 +110,7 @@ namespace Rogero.SchedulingLibrary.Tests.Generators
             var every3Minutes = new CronTemplateBuilder().WithEverything().EveryXMinutes(3).Build();
             var every4Minutes = new CronTemplateBuilder().WithEverything().EveryXMinutes(4).Build();
 
-            var nextTimes = CronTimeAggregateGenerator2
+            var nextTimes = CronTimeGenerator
                 .Generate(DateTime.MinValue, every3Minutes, every4Minutes)
                 .Take(100)
                 .ToList();
