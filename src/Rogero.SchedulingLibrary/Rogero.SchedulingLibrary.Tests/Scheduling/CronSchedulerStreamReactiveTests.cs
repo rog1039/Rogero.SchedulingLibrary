@@ -31,7 +31,7 @@ namespace Rogero.SchedulingLibrary.Tests.Scheduling
                 .WithAllDaysOfMonth()
                 .WithDaysOfWeek(1, 2, 3, 4, 5)
                 .WithAllMonths()
-                .BuildCronTemplate();
+                .Build();
             
             _simpleStreamBase = new CronTimeStreamSimple(breakTemplate, _dateTimeRepository.Now());
             _cronSchedulerStreamReactive = new CronSchedulerStreamReactive(

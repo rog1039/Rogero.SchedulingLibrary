@@ -16,7 +16,7 @@ namespace Rogero.SchedulingLibrary.Tests
         public void ThrowIfTemplateNotTotallyFilledOut()
         {
             Assert.Throws<ArgumentNullException>(
-                () => new CronTemplateBuilder().BuildCronTemplate());
+                () => new CronTemplateBuilder().Build());
         }
 
         [Fact()]
@@ -29,7 +29,7 @@ namespace Rogero.SchedulingLibrary.Tests
                 .WithDaysOfMonth(1, 10, 25)
                 .WithAllMonths()
                 .WithAllDaysOfWeek()
-                .BuildCronTemplate();
+                .Build();
         }
     }
 
@@ -38,6 +38,8 @@ namespace Rogero.SchedulingLibrary.Tests
         private readonly TestScheduler _testScheduler = new TestScheduler();
         private readonly IDateTimeRepository _dateTimeRepository;
         private CronTemplate _cronTemplate;
+        private int _callbackCount;
+        private CronSchedulerCallback _scheduler;
 
         public CronSchedulerCallbackTests()
         {
@@ -48,54 +50,51 @@ namespace Rogero.SchedulingLibrary.Tests
                     .WithAllDaysOfMonth()
                     .WithAllMonths()
                     .WithAllDaysOfWeek()
-                    .BuildCronTemplate();
+                    .Build();
+
+            _callbackCount = 0;
+            _scheduler = new CronSchedulerCallback(_dateTimeRepository, _testScheduler, _cronTemplate);
+            Logger.LogAction = z => Debug.WriteLine(z);
         }
 
         [Fact()]
         [Trait("Category", "Instant")]
         public void RunOnceAtStart()
         {
-            var callbackCount = 0;
-            var scheduler = new CronSchedulerCallback(_dateTimeRepository, _testScheduler, _cronTemplate);
-            Logger.LogAction = z => Debug.WriteLine(z);
-            scheduler.Start(() =>
+            _scheduler.Start(() =>
             {
                 Debug.WriteLine($"Client notified:  {_dateTimeRepository.Now():O}");
-                callbackCount++;
+                _callbackCount++;
             });
             _testScheduler.AdvanceBy(TimeSpan.FromMinutes(35).Ticks);
-            Thread.Sleep(10);
-            callbackCount.Should().Be(1);
+            Thread.Sleep(100);
+            _callbackCount.Should().Be(2);
         }
 
         [Fact()]
         [Trait("Category", "Instant")]
         public void Run100Times()
         {
-            var callbackCount = 0;
-            var scheduler = new CronSchedulerCallback(_dateTimeRepository, _testScheduler, _cronTemplate);
-            scheduler.Start(() =>
+            _scheduler.Start(() =>
             {
-                callbackCount++;
+                _callbackCount++;
             });
             _testScheduler.AdvanceBy(TimeSpan.FromDays(2).Ticks);
             Thread.Sleep(1000);
-            Debug.WriteLine($"Callback count: {callbackCount}");
+            Debug.WriteLine($"Callback count: {_callbackCount}");
         }
 
         [Fact()]
         [Trait("Category", "Slow")]
         public void Run10000Times()
         {
-            var callbackCount = 0;
-            var scheduler = new CronSchedulerCallback(_dateTimeRepository, _testScheduler, _cronTemplate);
-            scheduler.Start(() =>
+            _scheduler.Start(() =>
             {
-                callbackCount++;
+                _callbackCount++;
             });
             _testScheduler.AdvanceBy(TimeSpan.FromDays(365).Ticks);
             Thread.Sleep(1000);
-            Debug.WriteLine($"Callback count: {callbackCount}");
+            Debug.WriteLine($"Callback count: {_callbackCount}");
         }
     }
 }

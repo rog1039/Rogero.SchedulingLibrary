@@ -16,7 +16,7 @@ namespace Rogero.SchedulingLibrary.Tests
                 .WithDaysOfMonth(5,15,25)
                 .WithMonths(3,6,9)
                 .WithAllDaysOfWeek()
-                .BuildCronTemplate();
+                .Build();
 
         }
 

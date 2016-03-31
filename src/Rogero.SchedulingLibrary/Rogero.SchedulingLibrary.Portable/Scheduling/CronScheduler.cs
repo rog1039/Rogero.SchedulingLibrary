@@ -27,7 +27,6 @@ namespace Rogero.SchedulingLibrary.Scheduling
             _dateTimeRepository = dateTimeRepository;
             _cronTemplate = cronTemplate;
             _scheduler = scheduler;
-            CreateCronTimeQueue();
         }
 
         public void Start(Action callback)

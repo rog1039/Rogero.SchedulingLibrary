@@ -90,7 +90,30 @@ namespace Rogero.SchedulingLibrary
                 throw new InvalidDataException("Array cannot be null or have no elements. When providing values to the CronTemplateBuilder, you must specify at least one integer.");
         }
 
-        public CronTemplate BuildCronTemplate()
+        public CronTemplateBuilder EveryXMinutes(int period, int min = 0, int max = 59)
+        {
+            _minutes = Enumerable.Range(min, max).Where(z => z%period == 0).ToList();
+            return this;
+        }
+
+        public CronTemplateBuilder EveryXHours(int period, int min = 0, int max = 23)
+        {
+            _hours = Enumerable.Range(min, max).Where(z => z % period == 0).ToList();
+            return this;
+        }
+
+        public CronTemplateBuilder EveryXDays(int period, int min = 1, int max = 31)
+        {
+            _daysOfMonth = Enumerable.Range(min, max).Where(z => z % period == 0).ToList();
+            return this;
+        }
+
+        public CronTemplateBuilder WithEverything()
+        {
+            return WithAllMinutes().WithAllHours().WithAllDaysOfMonth().WithAllDaysOfWeek().WithAllMonths();
+        }
+
+        public CronTemplate Build()
         {
             if(_minutes == null || _hours == null || _daysOfMonth == null || _months == null || _daysOfWeek == null) 
                 throw new ArgumentNullException("Values must be provided for all sections of the CronTemplate: Minutes, Hours, DaysOfMonth, Months, and DaysOfWeek");

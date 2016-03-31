@@ -13,7 +13,7 @@ namespace Rogero.SchedulingLibrary.Tests
                 .WithAllDaysOfMonth()
                 .WithAllDaysOfWeek()
                 .WithAllMonths()
-                .BuildCronTemplate();
+                .Build();
 
         private CronTemplate mondayTemplate =
             new CronTemplateBuilder()
@@ -22,7 +22,7 @@ namespace Rogero.SchedulingLibrary.Tests
                 .WithAllDaysOfMonth()
                 .WithDaysOfWeek(1)
                 .WithAllMonths()
-                .BuildCronTemplate();
+                .Build();
 
         private CronTime time;
 

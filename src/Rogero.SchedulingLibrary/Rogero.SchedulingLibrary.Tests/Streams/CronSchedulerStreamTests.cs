@@ -32,7 +32,7 @@ namespace Rogero.SchedulingLibrary.Tests.Streams
                 .WithAllDaysOfMonth()
                 .WithDaysOfWeek(1, 2, 3, 4, 5)
                 .WithAllMonths()
-                .BuildCronTemplate();
+                .Build();
 
             var hourlyTemplate = new CronTemplateBuilder()
                 .WithMinutes(0)
@@ -40,7 +40,7 @@ namespace Rogero.SchedulingLibrary.Tests.Streams
                 .WithAllDaysOfMonth()
                 .WithDaysOfWeek(1, 2, 3, 4, 5)
                 .WithAllMonths()
-                .BuildCronTemplate();
+                .Build();
 
             _simpleStreamBase = new CronTimeStreamSimple(breakTemplate, DateTime.Now);
             _complexStreamBase = new CronTimeStreamComplex(DateTime.Now, breakTemplate, hourlyTemplate);
@@ -63,7 +63,7 @@ namespace Rogero.SchedulingLibrary.Tests.Streams
             _testScheduler.AdvanceBy(TimeSpan.FromHours(91).Ticks);
             Debug.WriteLine(_testScheduler.Now);
             Thread.Sleep(100);
-            callbackCount.Should().Be(24);
+            callbackCount.Should().Be(22);
         }
 
         [Fact()]

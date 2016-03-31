@@ -19,7 +19,7 @@ namespace Rogero.SchedulingLibrary.Tests.Generators
                 .WithAllDaysOfMonth()
                 .WithDaysOfWeek(1, 2, 3, 4, 5)
                 .WithAllMonths()
-                .BuildCronTemplate();
+                .Build();
 
             var hourlyTemplate = new CronTemplateBuilder()
                 .WithMinutes(0)
@@ -27,9 +27,9 @@ namespace Rogero.SchedulingLibrary.Tests.Generators
                 .WithAllDaysOfMonth()
                 .WithDaysOfWeek(1, 2, 3, 4, 5)
                 .WithAllMonths()
-                .BuildCronTemplate();
+                .Build();
 
-            _nextTimes = CronTimeAggregateGenerator
+            _nextTimes = CronTimeAggregateGenerator2
                 .Generate(new DateTime(2016, 01, 01), breakTemplate, hourlyTemplate);
         }
 
@@ -101,6 +101,33 @@ namespace Rogero.SchedulingLibrary.Tests.Generators
                 count++;
             }
             count.Should().Be(5);
+        }
+
+        [Fact()]
+        [Trait("Category", "Instant")]
+        public void DontDropUpcomingCronTimesWhenTwoCronTemplatesGenerateTheSameTime()
+        {
+            var every3Minutes = new CronTemplateBuilder().WithEverything().EveryXMinutes(3).Build();
+            var every4Minutes = new CronTemplateBuilder().WithEverything().EveryXMinutes(4).Build();
+
+            var nextTimes = CronTimeAggregateGenerator2
+                .Generate(DateTime.MinValue, every3Minutes, every4Minutes)
+                .Take(100)
+                .ToList();
+
+            foreach (var nextTime in nextTimes)
+            {
+                Console.WriteLine(nextTime.DateTime.Value.ToString("yyyy-MM-dd  hh:mm:ss tt  dddd"));
+            }
+
+            var expectedValues3 = Enumerable.Range(0, 100).Select(z => z*3).Where(z => z < 60).ToList();
+            var expectedValues4 = Enumerable.Range(0, 100).Select(z => z*4).Where(z => z < 60).ToList();
+            var expectedValues = new SortedSet<int>(expectedValues3.Union(expectedValues4)).Take(100).ToList();
+
+            for (int i = 0; i < expectedValues.Count; i++)
+            {
+                nextTimes[i].Time.Minute.Should().Be(expectedValues[i]);
+            }
         }
     }
 }
