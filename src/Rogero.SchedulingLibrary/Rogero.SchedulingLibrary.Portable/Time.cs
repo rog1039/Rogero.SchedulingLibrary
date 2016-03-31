@@ -22,6 +22,7 @@ namespace Rogero.SchedulingLibrary
 
         public Time(DateTime datetime)
         {
+            datetime = datetime.AddSeconds(60 - datetime.Second);
             Minute = datetime.Minute;
             Hour = datetime.Hour;
             Day = datetime.Day;
