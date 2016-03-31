@@ -6,7 +6,7 @@ using Rogero.SchedulingLibrary.Streams;
 
 namespace Rogero.SchedulingLibrary.Scheduling
 {
-    public class SchedulerReactive
+    public class ReactiveScheduler
     {
         public IObservable<CronTime> SchedulerObservable => GetEventStream();
         public IEnumerable<CronTime> UpcomingEvents => _scheduler.UpcomingEvents;
@@ -16,7 +16,7 @@ namespace Rogero.SchedulingLibrary.Scheduling
         private bool _schedulerStarted = false;
         private readonly Subject<CronTime> _schedulerCallbackObservable = new Subject<CronTime>();
 
-        public SchedulerReactive(IDateTimeRepository dateTimeRepository, IScheduler scheduler, CronTimeStreamBase cronTimeStream)
+        public ReactiveScheduler(IDateTimeRepository dateTimeRepository, IScheduler scheduler, CronTimeStreamBase cronTimeStream)
         {
             _scheduler = new Scheduler(dateTimeRepository, scheduler, cronTimeStream);
         }

@@ -17,7 +17,7 @@ namespace Rogero.SchedulingLibrary.Tests.Scheduling
         private readonly TestScheduler _testScheduler = new TestScheduler();
         private readonly IDateTimeRepository _dateTimeRepository;
         private readonly CronTimeStreamBase _simpleStreamBase;
-        private readonly SchedulerReactive _schedulerReactive;
+        private readonly ReactiveScheduler _reactiveScheduler;
 
         public CronSchedulerStreamReactiveTests()
         {
@@ -32,7 +32,7 @@ namespace Rogero.SchedulingLibrary.Tests.Scheduling
                 .Build();
             
             _simpleStreamBase = new CronTimeStreamSimple(breakTemplate, _dateTimeRepository.Now());
-            _schedulerReactive = new SchedulerReactive(
+            _reactiveScheduler = new ReactiveScheduler(
                 _dateTimeRepository, _testScheduler, _simpleStreamBase);
         }
 
@@ -43,7 +43,7 @@ namespace Rogero.SchedulingLibrary.Tests.Scheduling
             int callCount = 0;
             CronTime lastEvent = null;
             Logger.LogAction = s => Debug.WriteLine(s);
-            _schedulerReactive.SchedulerObservable.Subscribe(cronTime =>
+            _reactiveScheduler.SchedulerObservable.Subscribe(cronTime =>
             {
                 callCount++;
                 lastEvent = cronTime;
@@ -64,7 +64,7 @@ namespace Rogero.SchedulingLibrary.Tests.Scheduling
             CronTime lastEvent = null;
             Logger.LogAction = s => Debug.WriteLine(s);
             var cronTimeEvents = new List<CronTime>();
-            _schedulerReactive.SchedulerObservable.Subscribe(cronTime =>
+            _reactiveScheduler.SchedulerObservable.Subscribe(cronTime =>
             {
                 callCount++;
                 cronTimeEvents.Add(cronTime);
@@ -80,14 +80,14 @@ namespace Rogero.SchedulingLibrary.Tests.Scheduling
             }
 
             callCount.Should().Be(6);
-            _schedulerReactive.LastFiredSchedule.DateTime.Value.Should().Be(new DateTime(1, 1, 1, 14, 30, 0));
+            _reactiveScheduler.LastFiredSchedule.DateTime.Value.Should().Be(new DateTime(1, 1, 1, 14, 30, 0));
 
             Console.WriteLine("Starting upcoming event listing");
-            foreach (var cronTime in _schedulerReactive.UpcomingEvents.Take(15000))
+            foreach (var cronTime in _reactiveScheduler.UpcomingEvents.Take(15000))
             {
                 Debug.WriteLine($"{cronTime.DateTime.Value.ToString("yyyy-MM-dd  hh:mm:ss tt ddd")}");
             }
-            _schedulerReactive.LastFiredSchedule.DateTime.Value.Should().Be(new DateTime(1, 1, 1, 14, 30, 0));
+            _reactiveScheduler.LastFiredSchedule.DateTime.Value.Should().Be(new DateTime(1, 1, 1, 14, 30, 0));
         }
     }
 }
