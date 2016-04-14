@@ -10,7 +10,7 @@ namespace Rogero.SchedulingLibrary
         public EquatableList Hours { get; } = new EquatableList();
         public EquatableList DaysOfMonth { get; } = new EquatableList();
         public EquatableList Months { get; } = new EquatableList();
-        public EquatableList DayOfWeek { get; } = new EquatableList();
+        public EquatableList DaysOfWeek { get; } = new EquatableList();
 
         public CronTemplate(IList<int> minutes, IList<int> hours, IList<int> daysOfMonth, IList<int> months, IList<int> dayOfWeek)
         {
@@ -18,14 +18,14 @@ namespace Rogero.SchedulingLibrary
             Hours.AddRange(hours);
             DaysOfMonth.AddRange(daysOfMonth);
             Months.AddRange(months);
-            DayOfWeek.AddRange(dayOfWeek);
+            DaysOfWeek.AddRange(dayOfWeek);
         }
 
         public bool Equals(CronTemplate other)
         {
             if (ReferenceEquals(null, other)) return false;
             if (ReferenceEquals(this, other)) return true;
-            return Minutes.Equals(other.Minutes) && Hours.Equals(other.Hours) && DaysOfMonth.Equals(other.DaysOfMonth) && Months.Equals(other.Months) && DayOfWeek.Equals(other.DayOfWeek);
+            return Minutes.Equals(other.Minutes) && Hours.Equals(other.Hours) && DaysOfMonth.Equals(other.DaysOfMonth) && Months.Equals(other.Months) && DaysOfWeek.Equals(other.DaysOfWeek);
         }
 
         public override bool Equals(object obj)
@@ -44,7 +44,7 @@ namespace Rogero.SchedulingLibrary
                 hashCode = (hashCode*397) ^ Hours.GetHashCode();
                 hashCode = (hashCode*397) ^ DaysOfMonth.GetHashCode();
                 hashCode = (hashCode*397) ^ Months.GetHashCode();
-                hashCode = (hashCode*397) ^ DayOfWeek.GetHashCode();
+                hashCode = (hashCode*397) ^ DaysOfWeek.GetHashCode();
                 return hashCode;
             }
         }

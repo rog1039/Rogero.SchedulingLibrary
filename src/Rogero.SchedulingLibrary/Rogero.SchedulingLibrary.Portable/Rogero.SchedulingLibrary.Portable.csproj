@@ -34,7 +34,11 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="Streams\CronStream.cs" />
+    <Compile Include="CronTemplateBuilder.Shortcuts.cs" />
     <Compile Include="CronTime.Equals.cs" />
+    <Compile Include="Infrastructure\DateStringParser.cs" />
+    <Compile Include="DaysOfWeek.cs" />
     <Compile Include="Generators\CronTimeAggregateGenerator.cs" />
     <Compile Include="CronTimeAnalysis.cs" />
     <Compile Include="Generators\CronTimeExtensionMethods.cs" />
@@ -44,6 +48,7 @@
     <Compile Include="CronTemplateBuilder.cs" />
     <Compile Include="CronTime.cs" />
     <Compile Include="CronTimeValidator.cs" />
+    <Compile Include="RegexExtensions.cs" />
     <Compile Include="Scheduling\ReactiveScheduler.cs" />
     <Compile Include="Scheduling\Scheduler.cs" />
     <Compile Include="Streams\CronTimeStreamBase.cs" />

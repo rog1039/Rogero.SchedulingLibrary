@@ -22,12 +22,20 @@ namespace Rogero.SchedulingLibrary
 
         public Time(DateTime datetime)
         {
-            datetime = datetime.AddSeconds(60 - datetime.Second);
+            datetime = RoundUpToNearesetMinute(datetime);
             Minute = datetime.Minute;
             Hour = datetime.Hour;
             Day = datetime.Day;
             Month = datetime.Month;
             Year = datetime.Year;
+        }
+
+        private static DateTime RoundUpToNearesetMinute(DateTime datetime)
+        {
+            if (datetime.Second == 0) return datetime;
+
+            datetime = datetime.AddSeconds(60 - datetime.Second);
+            return datetime;
         }
 
         public Time ChangeMinute(int minute, CronTemplate template)

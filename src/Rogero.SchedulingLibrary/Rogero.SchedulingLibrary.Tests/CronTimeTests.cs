@@ -53,7 +53,7 @@ namespace Rogero.SchedulingLibrary.Tests
             var cronTime = new CronTime(mondayTemplate, new DateTime(2016, 01, 01, 13, 10, 0));
             for (int i = 0; i < 1000; i++)
             {
-                //date.DateTime.DayOfWeek.Should().Be(DayOfWeek.Monday);
+                //date.DateTime.DaysOfWeek.Should().Be(DaysOfWeek.Monday);
                 Console.WriteLine($"{cronTime.DateTime.Value:R}");
                 cronTime = cronTime.GetNext();
             }

@@ -94,6 +94,8 @@
     <Compile Include="Streams\CronSchedulerStreamTests.cs" />
     <Compile Include="CronTimeTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Streams\CronStreamTests.cs" />
+    <Compile Include="Infrastructure\DateParsingTests.cs" />
     <Compile Include="ToValidCronTimeTests.cs" />
   </ItemGroup>
   <ItemGroup>

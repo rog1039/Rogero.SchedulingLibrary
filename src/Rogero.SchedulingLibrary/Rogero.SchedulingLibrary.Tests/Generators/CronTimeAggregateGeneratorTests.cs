@@ -120,8 +120,8 @@ namespace Rogero.SchedulingLibrary.Tests.Generators
                 Console.WriteLine(nextTime.DateTime.Value.ToString("yyyy-MM-dd  hh:mm:ss tt  dddd"));
             }
 
-            var expectedValues3 = Enumerable.Range(0, 100).Select(z => z*3).Where(z => z < 60).ToList();
-            var expectedValues4 = Enumerable.Range(0, 100).Select(z => z*4).Where(z => z < 60).ToList();
+            var expectedValues3 = Enumerable.Range(0, 20).Select(z => z*3).Where(z => z < 60).ToList();
+            var expectedValues4 = Enumerable.Range(0, 20).Select(z => z*4).Where(z => z < 60).ToList();
             var expectedValues = new SortedSet<int>(expectedValues3.Union(expectedValues4)).Take(100).ToList();
 
             for (int i = 0; i < expectedValues.Count; i++)

@@ -99,7 +99,7 @@ namespace Rogero.SchedulingLibrary
 
         internal static bool MatchDayOfWeek(CronTemplate cronTemplate, DateTime date)
         {
-            var dayOfWeekMatch = cronTemplate.DayOfWeek.Contains((int) date.DayOfWeek);
+            var dayOfWeekMatch = cronTemplate.DaysOfWeek.Contains((int) date.DayOfWeek);
             return dayOfWeekMatch;
         }
 

@@ -5,7 +5,7 @@ using System.Linq;
 
 namespace Rogero.SchedulingLibrary
 {
-    public class CronTemplateBuilder
+    public partial class CronTemplateBuilder
     {
         private IList<int> _minutes;
         private IList<int> _hours;
