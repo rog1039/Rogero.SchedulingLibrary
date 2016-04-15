@@ -1,8 +1,10 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using FluentAssertions;
 using Rogero.SchedulingLibrary.Generators;
+using Rogero.SchedulingLibrary.Streams;
 using Xunit;
 
 namespace Rogero.SchedulingLibrary.Tests.Generators
@@ -120,14 +122,29 @@ namespace Rogero.SchedulingLibrary.Tests.Generators
                 Console.WriteLine(nextTime.DateTime.Value.ToString("yyyy-MM-dd  hh:mm:ss tt  dddd"));
             }
 
-            var expectedValues3 = Enumerable.Range(0, 20).Select(z => z*3).Where(z => z < 60).ToList();
-            var expectedValues4 = Enumerable.Range(0, 20).Select(z => z*4).Where(z => z < 60).ToList();
+            var expectedValues3 = Enumerable.Range(1, 20).Select(z => z*3).Where(z => z < 60).ToList();
+            var expectedValues4 = Enumerable.Range(1, 20).Select(z => z*4).Where(z => z < 60).ToList();
             var expectedValues = new SortedSet<int>(expectedValues3.Union(expectedValues4)).Take(100).ToList();
 
             for (int i = 0; i < expectedValues.Count; i++)
             {
                 nextTimes[i].Time.Minute.Should().Be(expectedValues[i]);
             }
+        }
+
+        [Fact()]
+        [Trait("Category", "Instant")]
+        public void CronTimeGeneratorTests()
+        {
+            DateTime _dateTime = new DateTime(2016, 01, 01, 0, 0, 1);
+            var stream = (CronTimeStreamComplex)CronStream.CreateSchedule(DaysOfWeek.Monday, "9p");
+            var template = stream.CronTemplates.First();
+            var times = CronTimeGenerator.Generate(_dateTime, template).Take(10).ToList();
+
+            Debug.WriteLine(times[0].DateTime.Value.ToString("yyyy-MM-dd ddd  hh:mm:ss tt"));
+
+            times[0].DateTime.Value.Should().Be(new DateTime(2016, 01, 04, 21, 0, 0));
+            times[1].DateTime.Value.Should().Be(new DateTime(2016, 01, 11, 21, 0, 0));
         }
     }
 }

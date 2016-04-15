@@ -39,7 +39,7 @@
     <Compile Include="CronTime.Equals.cs" />
     <Compile Include="Infrastructure\DateStringParser.cs" />
     <Compile Include="DaysOfWeek.cs" />
-    <Compile Include="Generators\CronTimeAggregateGenerator.cs" />
+    <Compile Include="Generators\CronTimeGenerator.cs" />
     <Compile Include="CronTimeAnalysis.cs" />
     <Compile Include="Generators\CronTimeExtensionMethods.cs" />
     <Compile Include="Generators\CronTimeSeriesExtensionMethods.cs" />
@@ -61,6 +61,7 @@
     <Compile Include="Infrastructure\ListExtensionMethods.cs" />
     <Compile Include="Infrastructure\EquatableList.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Infrastructure\DictionaryExtensionMethods.cs" />
     <Compile Include="Time.cs" />
     <Compile Include="Time.Equals.cs" />
   </ItemGroup>

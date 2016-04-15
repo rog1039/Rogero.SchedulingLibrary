@@ -2,6 +2,7 @@ using System;
 using System.Diagnostics;
 using System.Linq;
 using FluentAssertions;
+using Rogero.SchedulingLibrary.Generators;
 using Rogero.SchedulingLibrary.Streams;
 using Xunit;
 
@@ -53,5 +54,44 @@ namespace Rogero.SchedulingLibrary.Tests.Streams
                 Debug.WriteLine(time.DateTime.Value.ToString("yyyy-MM-dd ddd  hh:mm:ss tt"));
             }
         }
+    }
+
+    public class CronTimeStreamCombinationTests
+    {
+        private readonly DateTime _dateTime = new DateTime(2016, 01, 01, 0, 0, 1);
+
+        [Fact()]
+        [Trait("Category", "Instant")]
+        public void SimpleTest()
+        {
+            var stream = CronStream.CreateSchedule(DaysOfWeek.Monday, "9p");
+            var streamCombination = new CronTimeStreamCombination(_dateTime, stream);
+
+            foreach (var time in streamCombination.Take(10))
+            {
+                Debug.WriteLine(time.DateTime.Value.ToString("yyyy-MM-dd ddd  hh:mm:ss tt"));
+            }
+        }
+
+        [Fact()]
+        [Trait("Category", "Instant")]
+        public void SimpleTest2()
+        {
+            var everyMinute = new CronTemplateBuilder().WithEverything().EveryXMinutes(2).Build();
+            var stream = new CronTimeStreamSimple(everyMinute, _dateTime);
+            var streamCombination = new CronTimeStreamCombination(_dateTime, stream);
+            
+            foreach (var time in streamCombination.Take(200))
+            {
+                Debug.WriteLine(time.DateTime.Value.ToString("yyyy-MM-dd ddd  hh:mm:ss tt"));
+            }
+            var results = streamCombination.Take(5).ToList();
+            results[0].Time.Minute.Should().Be(2);
+            results[1].Time.Minute.Should().Be(4);
+            results[2].Time.Minute.Should().Be(6);
+            results[3].Time.Minute.Should().Be(8);
+            results[4].Time.Minute.Should().Be(10);
+        }
+
     }
 }

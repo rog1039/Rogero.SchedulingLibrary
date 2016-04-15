@@ -7,22 +7,22 @@ namespace Rogero.SchedulingLibrary.Streams
     public class CronTimeStreamComplex : CronTimeStreamBase
     {
         private readonly DateTime _dateTime;
-        private readonly CronTemplate[] _cronTemplates;
+        public CronTemplate[] CronTemplates { get; }
 
         public CronTimeStreamComplex(DateTime dateTime, params CronTemplate[] cronTemplates)
         {
             _dateTime = dateTime;
-            _cronTemplates = cronTemplates;
+            CronTemplates = cronTemplates;
         }
 
         public override CronTimeStreamBase AdvanceTo(DateTime dateTime)
         {
-            return new CronTimeStreamComplex(dateTime, _cronTemplates);
+            return new CronTimeStreamComplex(dateTime, CronTemplates);
         }
 
         public override IEnumerator<CronTime> GetEnumerator()
         {
-            return CronTimeGenerator.Generate(_dateTime, _cronTemplates).GetEnumerator();
+            return CronTimeGenerator.Generate(_dateTime, CronTemplates).GetEnumerator();
         }
     }
 }
