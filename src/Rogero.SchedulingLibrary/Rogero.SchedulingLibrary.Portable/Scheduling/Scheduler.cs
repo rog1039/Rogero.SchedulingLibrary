@@ -35,7 +35,7 @@ namespace Rogero.SchedulingLibrary.Scheduling
                 Logger.Log($"{GetNowTimestampForLogging()} >>> Public start called");
                 _eventCallback = eventCallback;
                 _internalStream = _cronTimeStream.AdvanceTo(_dateTimeRepository.Now()).GetEnumerator();
-                SetCallback();
+                Run();
             }
             catch (Exception e)
             {
@@ -43,7 +43,7 @@ namespace Rogero.SchedulingLibrary.Scheduling
             }
         }
 
-        private void SetCallback()
+        private void Run()
         {
             Logger.Log($"{GetNowTimestampForLogging()} >>> Starting set callback");
             if (_internalStream.Current == null && !_internalStream.MoveNext())
@@ -63,7 +63,7 @@ namespace Rogero.SchedulingLibrary.Scheduling
                 if (nextCronTimeValid)
                 {
                     Logger.Log($"{GetNowTimestampForLogging()} >>> Next callback is valid and setting a callback for {_nextCronTime.DateTime.Value}");
-                    SetCallback(_nextCronTime);
+                    ScheduleCallback(_nextCronTime);
                     _internalStream.MoveNext();
                     return;
                 }
@@ -76,10 +76,8 @@ namespace Rogero.SchedulingLibrary.Scheduling
                         Logger.Log($"{GetNowTimestampForLogging()} >>> Attempted to move to next time and there were no elements.");
                         return;
                     }
-
                     Logger.Log($"{GetNowTimestampForLogging()} >>> Successfully MovedNext() to begin the while loop again.");
                 }
-                
             }
         }
 
@@ -88,7 +86,7 @@ namespace Rogero.SchedulingLibrary.Scheduling
             return _dateTimeRepository.Now().ToString("yyyy-MM-dd  hh:mm:ss tt");
         }
 
-        private void SetCallback(CronTime nextCronTime)
+        private void ScheduleCallback(CronTime nextCronTime)
         {
             var timeUntilDue = nextCronTime.DateTime.Value - _dateTimeRepository.Now();
             Logger.Log($"{GetNowTimestampForLogging()} >>> Setting callback for {timeUntilDue}.");
@@ -100,7 +98,7 @@ namespace Rogero.SchedulingLibrary.Scheduling
             var cronTime = _nextCronTime;
             LastFiredEvent = cronTime;
             Task.Run(() => _eventCallback(cronTime));
-            SetCallback();
+            Run();
         }
     }
 }
