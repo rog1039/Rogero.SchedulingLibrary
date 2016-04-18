@@ -60,37 +60,23 @@ namespace Rogero.SchedulingLibrary.Streams
 
             while (true)
             {
-                var streams = priorityList.First();
-                var nextStreams2 = (from stream in streams.Value
-                    let nextCronTime = stream.First()
-                    let nextStream = stream.AdvanceTo(nextCronTime.DateTime.Value)
-                    select new {CronTime = nextCronTime, Stream = nextStream}).ToList();
-                var nextStreams = streams
-                    .Value
-                    .Select(z => new {CronTime = z.First(), Stream = z.AdvanceTo(z.First().DateTime.Value)})
-                    .ToList();
-                priorityList.AddRange(nextStreams2, s => s.CronTime, s => s.Stream);
-                priorityList.Remove(streams.Key);
-                yield return streams.Key;
+                var dueStreams = priorityList.First();
+                var nextStreams =
+                    (from stream in dueStreams.Value
+                        let nextCronTime = stream.First()
+                        let nextStream = stream.AdvanceTo(nextCronTime.DateTime.Value)
+                        select new {CronTime = nextCronTime, Stream = nextStream})
+                        .ToList();
+                
+                priorityList.AddRange(nextStreams, s => s.CronTime, s => s.Stream);
+                priorityList.Remove(dueStreams.Key);
+                yield return dueStreams.Key;
             }
         }
-
-
+        
         private static SortedDictionary<CronTime, IList<CronTimeStreamBase>> CreateCronTimePriorityList(
             DateTime dateTime, IList<CronTimeStreamBase> cronTimeStreams)
         {
-            var cronTImes2 = from stream in cronTimeStreams
-                let advancedStream = stream.AdvanceTo(dateTime)
-                let nextTime = advancedStream.First()
-                let furtherAdvancedStream = stream.AdvanceTo(nextTime.DateTime.Value)
-                select new {Key = nextTime, Stream = furtherAdvancedStream};
-            var dict = new SortedDictionary<CronTime, IList<CronTimeStreamBase>>();
-            foreach (var kvp in cronTImes2)
-            {
-                dict.AddToDictionary(kvp.Key, kvp.Stream);
-            }
-            return dict;
-
             var cronTimes = cronTimeStreams
                 .ToSortedDictionaryMany(z => z.AdvanceTo(dateTime).First(),
                                         z => z.AdvanceTo(z.AdvanceTo(dateTime).First().DateTime.Value));

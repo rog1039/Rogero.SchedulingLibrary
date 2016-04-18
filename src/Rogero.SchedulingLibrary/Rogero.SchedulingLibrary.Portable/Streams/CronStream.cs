@@ -9,56 +9,19 @@ namespace Rogero.SchedulingLibrary.Streams
     {
         public static CronTimeStreamBase CreateSchedule(DaysOfWeek daysOfWeek, string input, DateTime dateTime = default(DateTime))
         {
-            dateTime = dateTime == default(DateTime)
-                ? DateTime.Now
-                : dateTime;
-            var cronTemplates = CreateCronTemplates(daysOfWeek, input);
-            return new CronTimeStreamComplex(dateTime, cronTemplates.ToArray());
+            return CronScheduleParser.CreateCronTimeStream(daysOfWeek, input, dateTime);
         }
 
-        private static IEnumerable<CronTemplate> CreateCronTemplates(DaysOfWeek daysOfWeek, string input)
+        public static CronTimeStreamBase Combine(DateTime dateTime, IEnumerable<CronTimeStreamBase> streams)
         {
-            var times = GetTimes(input);
-            var days = CronTemplateBuilder.GetDaysListFromEnum(daysOfWeek);
-            var cronTemplates = CreateCronTemplates(days, times);
-            return cronTemplates;
+            var stream = new CronTimeStreamCombination(dateTime, streams);
+            return stream;
         }
 
-        private static IList<TimeSpan> GetTimes(string input)
+        public static CronTimeStreamBase Combine(DateTime dateTime, params CronTimeStreamBase[] streams)
         {
-            var times = input
-                .Split(new[] {" ", ","}, StringSplitOptions.RemoveEmptyEntries)
-                .Select(s => s.Trim())
-                .Select(s => DateStringParser.ParseTime(s).TimeOfDay)
-                .ToList();
-            return times;
-        }
-
-        private static IEnumerable<CronTemplate> CreateCronTemplates(IList<int> days, IList<TimeSpan> times)
-        {
-            foreach (var day in days)
-            {
-                foreach (var daysTemplate in CreateDaysTemplates(day, times))
-                    yield return daysTemplate;
-            }
-        }
-
-        private static IEnumerable<CronTemplate> CreateDaysTemplates(int day, IList<TimeSpan> times)
-        {
-            foreach (var time in times)
-            {
-                var isNextDay = time < times[0];
-                var cronDay = isNextDay
-                    ? (day+1) % 7
-                    : day;
-                yield return new CronTemplateBuilder()
-                    .WithMinutes(time.Minutes)
-                    .WithHours(time.Hours)
-                    .WithAllDaysOfMonth()
-                    .WithDaysOfWeek(cronDay)
-                    .WithAllMonths()
-                    .Build();
-            }
+            var stream = new CronTimeStreamCombination(dateTime, streams);
+            return stream;
         }
     }
 }

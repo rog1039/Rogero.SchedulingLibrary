@@ -8,28 +8,30 @@ using Xunit;
 
 namespace Rogero.SchedulingLibrary.Tests.Streams
 {
+    public class CronStreamTestData
+    {
+        public static CronTimeStreamBase cronStream1 = CronStream.CreateSchedule(DaysOfWeek.Weekdays, "6a, 7a, 8a, 9a,9:15a,9:30a,11a,12p,1p,2p,2:15p,2:30p,4p,5p");
+        public static CronTimeStreamBase cronStream2 = CronStream.CreateSchedule(DaysOfWeek.SMTWT, "10:30p, 12:15a, 12:30a, 2:30a, 3a, 5a, 5:15a, 7a");
+        public static CronTimeStreamBase cronStream3 = CronStream.CreateSchedule(DaysOfWeek.Friday, "9:30p, 11:15p, 11:30p, 1:30a, 2a, 4a, 4:15a, 6a");
+    }
+
     public class CronStreamTests
     {
-
         [Fact()]
         [Trait("Category", "Instant")]
         public void ScheduleTests()
         {
-            CronTimeStreamBase cronStream = CronStream.CreateSchedule(DaysOfWeek.Weekdays, "6a, 7a, 8a, 9a,9:15a,9:30a,11a,12p,1p,2p,2:15p,2:30p,4p,5p");
-            CronTimeStreamBase cronStream2 = CronStream.CreateSchedule(DaysOfWeek.SMTWT, "10:30p, 12:15a, 12:30a, 2:30a, 3a, 5a, 5:15a, 7a");
-            CronTimeStreamBase cronStream3 = CronStream.CreateSchedule(DaysOfWeek.Friday, "9:30p, 11:15p, 11:30p, 1:30a, 2a, 4a, 4:15a, 6a");
-
-            foreach (var time in cronStream.Take(200))
+            foreach (var time in CronStreamTestData.cronStream1.Take(200))
             {
                 Debug.WriteLine(time.DateTime.Value.ToString("yyyy-MM-dd ddd  hh:mm:ss tt"));
             }
 
-            foreach (var time in cronStream2.Take(200))
+            foreach (var time in CronStreamTestData.cronStream2.Take(200))
             {
                 Debug.WriteLine(time.DateTime.Value.ToString("yyyy-MM-dd ddd  hh:mm:ss tt"));
             }
 
-            foreach (var time in cronStream3.Take(200))
+            foreach (var time in CronStreamTestData.cronStream3.Take(200))
             {
                 Debug.WriteLine(time.DateTime.Value.ToString("yyyy-MM-dd ddd  hh:mm:ss tt"));
             }
@@ -91,6 +93,20 @@ namespace Rogero.SchedulingLibrary.Tests.Streams
             results[2].Time.Minute.Should().Be(6);
             results[3].Time.Minute.Should().Be(8);
             results[4].Time.Minute.Should().Be(10);
+        }
+
+        [Fact()]
+        [Trait("Category", "Instant")]
+        public void CombineComplicatedStreamsTest()
+        {
+            var streamCombination = new CronTimeStreamCombination(_dateTime,
+                                                                  CronStreamTestData.cronStream1,
+                                                                  CronStreamTestData.cronStream2,
+                                                                  CronStreamTestData.cronStream3);
+            foreach (var time in streamCombination.Take(200))
+            {
+                Debug.WriteLine(time.DateTime.Value.ToString("yyyy-MM-dd ddd  hh:mm:ss tt"));
+            }
         }
 
     }
