@@ -44,7 +44,7 @@ namespace Rogero.SchedulingLibrary
             var cronTime = this;
             while (true)
             {
-                cronTime = cronTime.IncrementMinute();
+                cronTime = cronTime.IncrementSecond();
                 var dateTime = cronTime.Time.ToDateTime();
                 if (dateTime.HasValue) return cronTime;
             }
@@ -73,6 +73,11 @@ namespace Rogero.SchedulingLibrary
         internal CronTime ChangeMinute(int minute)
         {
             return new CronTime(CronTemplate, Time.ChangeMinute(minute, CronTemplate));
+        }
+
+        internal CronTime ChangeSecond(int second)
+        {
+            return new CronTime(CronTemplate, Time.ChangeSecond(second, CronTemplate));
         }
 
 
@@ -117,6 +122,14 @@ namespace Rogero.SchedulingLibrary
             return minuteResult.Overflow
                 ? IncrementHour()
                 : ChangeMinute(minuteResult.Value);
+        }
+
+        internal CronTime IncrementSecond()
+        {
+            var secondResult = IncrementList(Time.Second, CronTemplate.Seconds);
+            return secondResult.Overflow
+                ? IncrementMinute()
+                : ChangeSecond(secondResult.Value);
         }
 
         private static IncrementListResult IncrementList(int currentValue, IList<int> possibleValues)

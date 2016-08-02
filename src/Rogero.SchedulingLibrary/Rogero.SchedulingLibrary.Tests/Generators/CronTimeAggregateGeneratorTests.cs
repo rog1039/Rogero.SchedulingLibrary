@@ -51,8 +51,13 @@ namespace Rogero.SchedulingLibrary.Tests.Generators
         {
             foreach (var nextTime in _nextTimes.ForTime(TimeSpan.FromDays(7)))
             {
-                Console.WriteLine(nextTime.DateTime.Value.ToString("yyyy-MM-dd  hh:mm:ss tt  dddd"));
+                PrintTime(nextTime);
             }
+        }
+
+        private static void PrintTime(CronTime nextTime)
+        {
+            Console.WriteLine(nextTime.DateTime.Value.ToString("yyyy-MM-dd  hh:mm:ss.fff tt  dddd"));
         }
 
         [Fact()]
@@ -62,7 +67,7 @@ namespace Rogero.SchedulingLibrary.Tests.Generators
             var results = _nextTimes.ForLesserOf(TimeSpan.FromDays(7), 3).ToList();
             foreach (var nextTime in results)
             {
-                Console.WriteLine(nextTime.DateTime.Value.ToString("yyyy-MM-dd  hh:mm:ss tt  dddd"));
+                PrintTime(nextTime);
             }
             results.Count.Should().Be(3);
         }
@@ -74,7 +79,7 @@ namespace Rogero.SchedulingLibrary.Tests.Generators
             var results = _nextTimes.ForLesserOf(TimeSpan.FromDays(1), 30).ToList();
             foreach (var nextTime in results)
             {
-                Console.WriteLine(nextTime.DateTime.Value.ToString("yyyy-MM-dd  hh:mm:ss tt  dddd"));
+                PrintTime(nextTime);
             }
             results.Count.Should().Be(11);
         }
@@ -86,7 +91,7 @@ namespace Rogero.SchedulingLibrary.Tests.Generators
             int count = 0;
             foreach (var nextTime in _nextTimes.ForLesserOfWithMinimum(TimeSpan.FromDays(3.9), count: 3000, minReturned: 11))
             {
-                Console.WriteLine(nextTime.DateTime.Value.ToString("yyyy-MM-dd  hh:mm:ss tt  dddd"));
+                PrintTime(nextTime);
                 count++;
             }
             count.Should().Be(22);
@@ -99,7 +104,7 @@ namespace Rogero.SchedulingLibrary.Tests.Generators
             int count = 0;
             foreach (var nextTime in _nextTimes.ForLesserOfWithMinimum(TimeSpan.FromDays(7), count: 5, minReturned: 3))
             {
-                Console.WriteLine(nextTime.DateTime.Value.ToString("yyyy-MM-dd  hh:mm:ss tt  dddd"));
+                PrintTime(nextTime);
                 count++;
             }
             count.Should().Be(5);
@@ -109,8 +114,8 @@ namespace Rogero.SchedulingLibrary.Tests.Generators
         [Trait("Category", "Instant")]
         public void DontDropUpcomingCronTimesWhenTwoCronTemplatesGenerateTheSameTime()
         {
-            var every3Minutes = new CronTemplateBuilder().WithEverything().EveryXMinutes(3).Build();
-            var every4Minutes = new CronTemplateBuilder().WithEverything().EveryXMinutes(4).Build();
+            var every3Minutes = new CronTemplateBuilder().WithEverything().WithSeconds(0).EveryXMinutes(3).Build();
+            var every4Minutes = new CronTemplateBuilder().WithEverything().WithSeconds(0).EveryXMinutes(4).Build();
 
             var nextTimes = CronTimeGenerator
                 .Generate(DateTime.MinValue, every3Minutes, every4Minutes)
@@ -119,7 +124,7 @@ namespace Rogero.SchedulingLibrary.Tests.Generators
 
             foreach (var nextTime in nextTimes)
             {
-                Console.WriteLine(nextTime.DateTime.Value.ToString("yyyy-MM-dd  hh:mm:ss tt  dddd"));
+                PrintTime(nextTime);
             }
 
             var expectedValues3 = Enumerable.Range(1, 20).Select(z => z*3).Where(z => z < 60).ToList();

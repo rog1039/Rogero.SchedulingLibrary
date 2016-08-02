@@ -1,4 +1,4 @@
-using Rogero.Option;
+using Rogero.Options;
 
 namespace Rogero.SchedulingLibrary
 {
@@ -19,6 +19,9 @@ namespace Rogero.SchedulingLibrary
 
             if (!cronTimeAnalysis.MinuteHasIndex)
                 return cronTime.IncrementMinute();
+
+            if (!cronTimeAnalysis.SecondHasIndex)
+                return cronTime.IncrementSecond();
 
             return Option<CronTime>.None;
         }

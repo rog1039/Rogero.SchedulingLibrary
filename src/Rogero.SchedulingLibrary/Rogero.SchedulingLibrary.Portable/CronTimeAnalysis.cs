@@ -2,6 +2,7 @@ namespace Rogero.SchedulingLibrary
 {
     public class CronTimeAnalysis
     {
+        public bool SecondHasIndex { get; }
         public bool MinuteHasIndex { get; }
         public bool HourHasIndex { get; }
         public bool DayOfMonthHasIndex { get; }
@@ -12,6 +13,8 @@ namespace Rogero.SchedulingLibrary
         {
             var time = cronTime.Time;
             var template = cronTime.CronTemplate;
+
+            SecondHasIndex = template.Seconds.Contains(time.Second);
             MinuteHasIndex = template.Minutes.Contains(time.Minute);
             HourHasIndex = template.Hours.Contains(time.Hour);
             DayOfMonthHasIndex = template.DaysOfMonth.Contains(time.Day);

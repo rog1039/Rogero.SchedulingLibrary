@@ -6,14 +6,16 @@ namespace Rogero.SchedulingLibrary
 {
     public class CronTemplate : IEquatable<CronTemplate>
     {
+        public EquatableList Seconds { get; } = new EquatableList();
         public EquatableList Minutes { get; } = new EquatableList();
         public EquatableList Hours { get; } = new EquatableList();
         public EquatableList DaysOfMonth { get; } = new EquatableList();
         public EquatableList Months { get; } = new EquatableList();
         public EquatableList DaysOfWeek { get; } = new EquatableList();
 
-        public CronTemplate(IList<int> minutes, IList<int> hours, IList<int> daysOfMonth, IList<int> months, IList<int> dayOfWeek)
+        public CronTemplate(IList<int> seconds, IList<int> minutes, IList<int> hours, IList<int> daysOfMonth, IList<int> months, IList<int> dayOfWeek)
         {
+            Seconds.AddRange(seconds);
             Minutes.AddRange(minutes);
             Hours.AddRange(hours);
             DaysOfMonth.AddRange(daysOfMonth);
@@ -25,7 +27,7 @@ namespace Rogero.SchedulingLibrary
         {
             if (ReferenceEquals(null, other)) return false;
             if (ReferenceEquals(this, other)) return true;
-            return Minutes.Equals(other.Minutes) && Hours.Equals(other.Hours) && DaysOfMonth.Equals(other.DaysOfMonth) && Months.Equals(other.Months) && DaysOfWeek.Equals(other.DaysOfWeek);
+            return Equals(Seconds, other.Seconds) && Equals(Minutes, other.Minutes) && Equals(Hours, other.Hours) && Equals(DaysOfMonth, other.DaysOfMonth) && Equals(Months, other.Months) && Equals(DaysOfWeek, other.DaysOfWeek);
         }
 
         public override bool Equals(object obj)
@@ -40,11 +42,12 @@ namespace Rogero.SchedulingLibrary
         {
             unchecked
             {
-                var hashCode = Minutes.GetHashCode();
-                hashCode = (hashCode*397) ^ Hours.GetHashCode();
-                hashCode = (hashCode*397) ^ DaysOfMonth.GetHashCode();
-                hashCode = (hashCode*397) ^ Months.GetHashCode();
-                hashCode = (hashCode*397) ^ DaysOfWeek.GetHashCode();
+                var hashCode = (Seconds != null ? Seconds.GetHashCode() : 0);
+                hashCode = (hashCode*397) ^ (Minutes != null ? Minutes.GetHashCode() : 0);
+                hashCode = (hashCode*397) ^ (Hours != null ? Hours.GetHashCode() : 0);
+                hashCode = (hashCode*397) ^ (DaysOfMonth != null ? DaysOfMonth.GetHashCode() : 0);
+                hashCode = (hashCode*397) ^ (Months != null ? Months.GetHashCode() : 0);
+                hashCode = (hashCode*397) ^ (DaysOfWeek != null ? DaysOfWeek.GetHashCode() : 0);
                 return hashCode;
             }
         }

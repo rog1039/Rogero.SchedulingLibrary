@@ -23,17 +23,17 @@ namespace Rogero.SchedulingLibrary.Tests.Streams
         {
             foreach (var time in CronStreamTestData.cronStream1.Take(200))
             {
-                Debug.WriteLine(time.DateTime.Value.ToString("yyyy-MM-dd ddd  hh:mm:ss tt"));
+                PrintTime(time);
             }
 
             foreach (var time in CronStreamTestData.cronStream2.Take(200))
             {
-                Debug.WriteLine(time.DateTime.Value.ToString("yyyy-MM-dd ddd  hh:mm:ss tt"));
+                PrintTime(time);
             }
 
             foreach (var time in CronStreamTestData.cronStream3.Take(200))
             {
-                Debug.WriteLine(time.DateTime.Value.ToString("yyyy-MM-dd ddd  hh:mm:ss tt"));
+                PrintTime(time);
             }
         }
 
@@ -53,14 +53,20 @@ namespace Rogero.SchedulingLibrary.Tests.Streams
 
             foreach (var time in stream.Take(200))
             {
-                Debug.WriteLine(time.DateTime.Value.ToString("yyyy-MM-dd ddd  hh:mm:ss tt"));
+                PrintTime(time);
             }
+        }
+
+
+        private static void PrintTime(CronTime nextTime)
+        {
+            Console.WriteLine(nextTime.DateTime.Value.ToString("yyyy-MM-dd  hh:mm:ss.fff tt  dddd"));
         }
     }
 
     public class CronTimeStreamCombinationTests
     {
-        private readonly DateTime _dateTime = new DateTime(2016, 01, 01, 0, 0, 1);
+        private readonly DateTime _dateTime = new DateTime(2016, 01, 01, 0, 0, 0);
 
         [Fact()]
         [Trait("Category", "Instant")]
@@ -71,7 +77,7 @@ namespace Rogero.SchedulingLibrary.Tests.Streams
 
             foreach (var time in streamCombination.Take(10))
             {
-                Debug.WriteLine(time.DateTime.Value.ToString("yyyy-MM-dd ddd  hh:mm:ss tt"));
+                PrintTime(time);
             }
         }
 
@@ -79,20 +85,20 @@ namespace Rogero.SchedulingLibrary.Tests.Streams
         [Trait("Category", "Instant")]
         public void SimpleTest2()
         {
-            var everyMinute = new CronTemplateBuilder().WithEverything().EveryXMinutes(2).Build();
-            var stream = new CronTimeStreamSimple(everyMinute, _dateTime);
+            var everySecond = new CronTemplateBuilder().WithEverything().EveryXSeconds(2).Build();
+            var stream = new CronTimeStreamSimple(everySecond, _dateTime);
             var streamCombination = new CronTimeStreamCombination(_dateTime, stream);
             
             foreach (var time in streamCombination.Take(200))
             {
-                Debug.WriteLine(time.DateTime.Value.ToString("yyyy-MM-dd ddd  hh:mm:ss tt"));
+                PrintTime(time);
             }
             var results = streamCombination.Take(5).ToList();
-            results[0].Time.Minute.Should().Be(2);
-            results[1].Time.Minute.Should().Be(4);
-            results[2].Time.Minute.Should().Be(6);
-            results[3].Time.Minute.Should().Be(8);
-            results[4].Time.Minute.Should().Be(10);
+            results[0].Time.Second.Should().Be(2);
+            results[1].Time.Second.Should().Be(4);
+            results[2].Time.Second.Should().Be(6);
+            results[3].Time.Second.Should().Be(8);
+            results[4].Time.Second.Should().Be(10);
         }
 
         [Fact()]
@@ -105,9 +111,13 @@ namespace Rogero.SchedulingLibrary.Tests.Streams
                                                                   CronStreamTestData.cronStream3);
             foreach (var time in streamCombination.Take(200))
             {
-                Debug.WriteLine(time.DateTime.Value.ToString("yyyy-MM-dd ddd  hh:mm:ss tt"));
+                PrintTime(time);
             }
         }
-
+        
+        private static void PrintTime(CronTime nextTime)
+        {
+            Console.WriteLine(nextTime.DateTime.Value.ToString("yyyy-MM-dd  hh:mm:ss.fff tt  dddd"));
+        }
     }
 }

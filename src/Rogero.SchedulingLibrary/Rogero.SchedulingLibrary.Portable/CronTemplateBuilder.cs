@@ -7,11 +7,30 @@ namespace Rogero.SchedulingLibrary
 {
     public partial class CronTemplateBuilder
     {
+        private IList<int> _seconds;
         private IList<int> _minutes;
         private IList<int> _hours;
         private IList<int> _daysOfMonth;
         private IList<int> _months;
         private IList<int> _daysOfWeek;
+
+        public CronTemplateBuilder()
+        {
+            _seconds = new List<int>() {0};
+        }
+
+        public CronTemplateBuilder WithAllSeconds()
+        {
+            _seconds = ZeroTo59;
+            return this;
+        }
+
+        public CronTemplateBuilder WithSeconds(params int[] seconds)
+        {
+            ArrayMustHaveLengthGreaterThanZero(seconds);
+            _seconds = new List<int>(seconds);
+            return this;
+        }
 
         public CronTemplateBuilder WithAllMinutes()
         {
@@ -90,6 +109,12 @@ namespace Rogero.SchedulingLibrary
                 throw new InvalidDataException("Array cannot be null or have no elements. When providing values to the CronTemplateBuilder, you must specify at least one integer.");
         }
 
+        public CronTemplateBuilder EveryXSeconds(int period, int min = 0, int max = 59)
+        {
+            _seconds = Enumerable.Range(min, max).Where(z => z % period == 0).ToList();
+            return this;
+        }
+
         public CronTemplateBuilder EveryXMinutes(int period, int min = 0, int max = 59)
         {
             _minutes = Enumerable.Range(min, max).Where(z => z%period == 0).ToList();
@@ -110,15 +135,15 @@ namespace Rogero.SchedulingLibrary
 
         public CronTemplateBuilder WithEverything()
         {
-            return WithAllMinutes().WithAllHours().WithAllDaysOfMonth().WithAllDaysOfWeek().WithAllMonths();
+            return WithAllSeconds().WithAllMinutes().WithAllHours().WithAllDaysOfMonth().WithAllDaysOfWeek().WithAllMonths();
         }
 
         public CronTemplate Build()
         {
-            if(_minutes == null || _hours == null || _daysOfMonth == null || _months == null || _daysOfWeek == null) 
+            if(_seconds == null | _minutes == null || _hours == null || _daysOfMonth == null || _months == null || _daysOfWeek == null) 
                 throw new ArgumentNullException("Values must be provided for all sections of the CronTemplate: Minutes, Hours, DaysOfMonth, Months, and DaysOfWeek");
 
-            return new CronTemplate(_minutes, _hours, _daysOfMonth, _months, _daysOfWeek);
+            return new CronTemplate(_seconds, _minutes, _hours, _daysOfMonth, _months, _daysOfWeek);
         }
 
         private static readonly IList<int> ZeroTo59 = Enumerable.Range(0, 60).ToList();
