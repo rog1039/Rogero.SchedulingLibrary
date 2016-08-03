@@ -20,6 +20,7 @@ namespace Rogero.SchedulingLibrary.Scheduling
         private Action<CronTime> _eventCallback;
         private IEnumerator<CronTime> _internalStream;
         private CronTime _nextCronTime;
+        private IDisposable _scheduledCallback;
 
         public Scheduler(IDateTimeRepository dateTimeRepository,  IScheduler scheduler, CronTimeStreamBase cronTimeStream)
         {
@@ -90,7 +91,7 @@ namespace Rogero.SchedulingLibrary.Scheduling
         {
             var timeUntilDue = nextCronTime.DateTime.Value - _dateTimeRepository.Now();
             Logger.Log($"{GetNowTimestampForLogging()} >>> Setting callback for {timeUntilDue}.");
-            _scheduler.Schedule(new object(), timeUntilDue, (scheduler, state) => SendEvent());
+            _scheduledCallback = _scheduler.Schedule(new object(), timeUntilDue, (scheduler, state) => SendEvent());
         }
 
         private void SendEvent()
@@ -99,6 +100,11 @@ namespace Rogero.SchedulingLibrary.Scheduling
             LastFiredEvent = cronTime;
             Task.Run(() => _eventCallback(cronTime));
             Run();
+        }
+
+        public void Stop()
+        {
+            _scheduledCallback.Dispose();
         }
     }
 }
