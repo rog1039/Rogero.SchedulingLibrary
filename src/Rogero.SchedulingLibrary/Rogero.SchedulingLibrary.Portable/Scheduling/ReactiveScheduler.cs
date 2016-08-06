@@ -16,9 +16,9 @@ namespace Rogero.SchedulingLibrary.Scheduling
         private bool _schedulerStarted = false;
         private readonly SubjectWithHookableDispose<CronTime> _schedulerCallbackObservable;
 
-        public ReactiveScheduler(IDateTimeRepository dateTimeRepository, IScheduler scheduler, CronTimeStreamBase cronTimeStream)
+        public ReactiveScheduler(IDateTimeRepository dateTimeRepository, IScheduler scheduler, CronTimeStreamBase cronTimeStream, bool callbackOnScheduler = false)
         {
-            _scheduler = new Scheduler(dateTimeRepository, scheduler, cronTimeStream);
+            _scheduler = new Scheduler(dateTimeRepository, scheduler, cronTimeStream, callbackOnScheduler);
             _schedulerCallbackObservable = new SubjectWithHookableDispose<CronTime>(DisposedCalled);
         }
 

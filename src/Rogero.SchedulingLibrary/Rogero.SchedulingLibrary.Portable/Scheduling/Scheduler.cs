@@ -16,17 +16,19 @@ namespace Rogero.SchedulingLibrary.Scheduling
         private readonly IDateTimeRepository _dateTimeRepository;
         private readonly IScheduler _scheduler;
         private readonly CronTimeStreamBase _cronTimeStream;
+        private readonly bool _callbackOnScheduler;
 
         private Action<CronTime> _eventCallback;
         private IEnumerator<CronTime> _internalStream;
         private CronTime _nextCronTime;
         private IDisposable _scheduledCallback;
 
-        public Scheduler(IDateTimeRepository dateTimeRepository,  IScheduler scheduler, CronTimeStreamBase cronTimeStream)
+        public Scheduler(IDateTimeRepository dateTimeRepository,  IScheduler scheduler, CronTimeStreamBase cronTimeStream, bool callbackOnScheduler = false)
         {
             _dateTimeRepository = dateTimeRepository;
             _scheduler = scheduler;
             _cronTimeStream = cronTimeStream;
+            _callbackOnScheduler = callbackOnScheduler;
         }
 
         public void Start(Action<CronTime> eventCallback)
@@ -98,7 +100,12 @@ namespace Rogero.SchedulingLibrary.Scheduling
         {
             var cronTime = _nextCronTime;
             LastFiredEvent = cronTime;
-            Task.Run(() => _eventCallback(cronTime));
+
+            if (_callbackOnScheduler)
+                _eventCallback(cronTime);
+            else
+                Task.Run(() => _eventCallback(cronTime));
+
             Run();
         }
 
