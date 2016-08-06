@@ -21,7 +21,6 @@ namespace Rogero.SchedulingLibrary.Tests.Scheduling
 
         public CronSchedulerStreamReactiveTests()
         {
-            _testScheduler.AdvanceBy(TimeSpan.FromSeconds(2).Ticks);
             _dateTimeRepository = new DateTimeRepositoryRx(_testScheduler);
 
             var breakTemplate = new CronTemplateBuilder()

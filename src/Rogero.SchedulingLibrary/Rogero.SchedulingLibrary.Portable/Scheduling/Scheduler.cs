@@ -8,6 +8,11 @@ using Rogero.SchedulingLibrary.Streams;
 
 namespace Rogero.SchedulingLibrary.Scheduling
 {
+    public static class DateTimeFormats
+    {
+        public const string DatetimeFormat = "yyyy-MM-dd  hh:mm:ss tt";
+        public const string DatetimeFormatWithDayOfWeek = "yyyy-MM-dd  hh:mm:ss tt ddd";
+    }
     public class Scheduler
     {
         public IEnumerable<CronTime> UpcomingEvents => _cronTimeStream.AdvanceTo(_dateTimeRepository.Now());
@@ -22,7 +27,6 @@ namespace Rogero.SchedulingLibrary.Scheduling
         private IEnumerator<CronTime> _internalStream;
         private CronTime _nextCronTime;
         private IDisposable _scheduledCallback;
-        private string _datetimeFormat = "yyyy-MM-dd  hh:mm:ss tt";
 
         public Scheduler(IDateTimeRepository dateTimeRepository,  IScheduler scheduler, CronTimeStreamBase cronTimeStream, bool callbackOnScheduler = false)
         {
@@ -59,7 +63,7 @@ namespace Rogero.SchedulingLibrary.Scheduling
             {
                 Logger.Log($"{GetNowTimestampForLogging()} >>> Beginning while loop inside of SetCallback");
                 _nextCronTime = _internalStream.Current;
-                Logger.Log($"{GetNowTimestampForLogging()} >>> _nextCronTime = {_nextCronTime.DateTime.Value.ToString(_datetimeFormat)}");
+                Logger.Log($"{GetNowTimestampForLogging()} >>> _nextCronTime = {_nextCronTime.DateTime.Value.ToString(DateTimeFormats.DatetimeFormat)}");
                 Logger.Log($"{GetNowTimestampForLogging()} >>> Determining of the _nextCronTimeIsValid");
                 var nextCronTimeValid = _nextCronTime.DateTime.HasValue &&
                                         _nextCronTime.DateTime.Value >= _dateTimeRepository.Now();
@@ -87,7 +91,7 @@ namespace Rogero.SchedulingLibrary.Scheduling
 
         private string GetNowTimestampForLogging()
         {
-            return _dateTimeRepository.Now().ToString(_datetimeFormat);
+            return _dateTimeRepository.Now().ToString(DateTimeFormats.DatetimeFormat);
         }
 
         private void ScheduleCallback(CronTime nextCronTime)
@@ -99,7 +103,7 @@ namespace Rogero.SchedulingLibrary.Scheduling
 
         private void SendEvent()
         {
-            Logger.Log($"{GetNowTimestampForLogging()} >>> Sending event for {_nextCronTime.DateTime.Value.ToString(_datetimeFormat)}.");
+            Logger.Log($"{GetNowTimestampForLogging()} >>> Sending event for {_nextCronTime.DateTime.Value.ToString(DateTimeFormats.DatetimeFormat)}.");
             var cronTime = _nextCronTime;
             LastFiredEvent = cronTime;
 
