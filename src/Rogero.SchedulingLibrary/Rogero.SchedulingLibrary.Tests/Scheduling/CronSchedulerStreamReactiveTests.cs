@@ -21,6 +21,7 @@ namespace Rogero.SchedulingLibrary.Tests.Scheduling
 
         public CronSchedulerStreamReactiveTests()
         {
+            _testScheduler.AdvanceBy(TimeSpan.FromSeconds(2).Ticks);
             _dateTimeRepository = new DateTimeRepositoryRx(_testScheduler);
 
             var breakTemplate = new CronTemplateBuilder()
@@ -88,6 +89,22 @@ namespace Rogero.SchedulingLibrary.Tests.Scheduling
                 Debug.WriteLine($"{cronTime.DateTime.Value.ToString("yyyy-MM-dd  hh:mm:ss tt ddd")}");
             }
             _reactiveScheduler.LastFiredSchedule.DateTime.Value.Should().Be(new DateTime(1, 1, 1, 14, 30, 0));
+        }
+
+        [Fact()]
+        [Trait("Category", "Instant")]
+        public void Test1000Runs()
+        {
+            var cronTemplate = new CronTemplateBuilder().WithEverything().EveryXSeconds(2).Build();
+            var simpleCronStream = new CronTimeStreamSimple(cronTemplate, _dateTimeRepository.Now());
+            var reactiveScheduler = new ReactiveScheduler(_dateTimeRepository, _testScheduler, simpleCronStream, true);
+            Logger.LogAction = Console.WriteLine;
+
+            int callCount = 0;
+            reactiveScheduler.SchedulerObservable.Subscribe(_ => callCount++);
+
+            _testScheduler.AdvanceBy(TimeSpan.FromSeconds(2000).Ticks);
+            callCount.Should().Be(1000);
         }
     }
 }

@@ -14,7 +14,7 @@ namespace Rogero.SchedulingLibrary.Scheduling
 
         public DateTime Now()
         {
-            return TestScheduler.Now.LocalDateTime;
+            return TestScheduler.Now.DateTime;
         }
     }
 }
