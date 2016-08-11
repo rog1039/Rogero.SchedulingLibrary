@@ -12,6 +12,11 @@ using Xunit;
 
 namespace Rogero.SchedulingLibrary.Tests.Scheduling
 {
+    public class SchedulerTests
+    {
+        
+    }
+
     public class CronSchedulerStreamReactiveTests
     {
         private readonly TestScheduler _testScheduler = new TestScheduler();

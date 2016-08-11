@@ -10,5 +10,10 @@ namespace Rogero.SchedulingLibrary.Scheduling
         {
             return DateTime;
         }
+
+        public DateTime UtcNow()
+        {
+            return DateTime;
+        }
     }
 }

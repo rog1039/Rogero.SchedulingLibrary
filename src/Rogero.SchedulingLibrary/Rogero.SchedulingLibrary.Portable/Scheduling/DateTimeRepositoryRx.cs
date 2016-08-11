@@ -5,16 +5,21 @@ namespace Rogero.SchedulingLibrary.Scheduling
 {
     public class DateTimeRepositoryRx : IDateTimeRepository
     {
-        public IScheduler TestScheduler { get; set; }
+        public IScheduler Scheduler { get; set; }
 
-        public DateTimeRepositoryRx(IScheduler testScheduler)
+        public DateTimeRepositoryRx(IScheduler scheduler)
         {
-            TestScheduler = testScheduler;
+            Scheduler = scheduler;
         }
 
         public DateTime Now()
         {
-            return TestScheduler.Now.DateTime;
+            return Scheduler.Now.DateTime;
+        }
+
+        public DateTime UtcNow()
+        {
+            return Scheduler.Now.UtcDateTime;
         }
     }
 }

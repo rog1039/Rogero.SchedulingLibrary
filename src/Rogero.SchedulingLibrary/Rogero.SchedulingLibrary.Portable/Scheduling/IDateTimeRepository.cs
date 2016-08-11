@@ -5,5 +5,6 @@ namespace Rogero.SchedulingLibrary.Scheduling
     public interface IDateTimeRepository
     {
         DateTime Now();
+        DateTime UtcNow();
     }
 }
