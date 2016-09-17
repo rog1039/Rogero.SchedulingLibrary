@@ -108,7 +108,14 @@ namespace Rogero.SchedulingLibrary.Scheduling
             LastFiredEvent = cronTime;
 
             if (_callbackOnScheduler)
-                _eventCallback(cronTime);
+                try
+                {
+                    _eventCallback(cronTime);
+                }
+                catch (Exception e)
+                {
+                    
+                }
             else
                 Task.Run(() => _eventCallback(cronTime));
 

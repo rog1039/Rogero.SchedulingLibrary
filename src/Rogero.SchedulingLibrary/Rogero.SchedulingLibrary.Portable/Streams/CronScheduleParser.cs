@@ -12,7 +12,7 @@ namespace Rogero.SchedulingLibrary.Streams
             dateTime = dateTime == default(DateTime)
                 ? DateTime.Now
                 : dateTime;
-            var cronTemplates = CronScheduleParser.CreateCronTemplates(daysOfWeek, input);
+            var cronTemplates = CreateCronTemplates(daysOfWeek, input);
             return new CronTimeStreamComplex(dateTime, cronTemplates.ToArray());
         }
 

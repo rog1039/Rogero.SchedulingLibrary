@@ -69,5 +69,32 @@ namespace Rogero.SchedulingLibrary
             if (daysOfWeek.HasFlag(DaysOfWeek.Saturday)) days.Add(6);
             return days;
         }
+
+        public static DaysOfWeek GetDaysOfWeekEnumFromStringOfInts(string stringOfInts)
+        {
+            var listOfInts = stringOfInts.ToCharArray().Select(c => int.Parse(c.ToString())).ToList();
+            return GetDaysOfWeekEnumFromInts(listOfInts);
+        }
+
+        public static DaysOfWeek GetDaysOfWeekEnumFromInts(IEnumerable<int> daysList)
+        {
+            var enums = daysList.Select(ConvertIntToDayOfWeek).ToList();
+            var daysEnum = enums[0];
+            daysEnum = enums.Skip(1).Aggregate(daysEnum, (e1, e2) => e1 | e2 );
+            return daysEnum;
+        }
+
+        private static DaysOfWeek ConvertIntToDayOfWeek(int z)
+        {
+            if (z == 0) return DaysOfWeek.Sunday;
+            if (z == 1) return DaysOfWeek.Monday;
+            if (z == 2) return DaysOfWeek.Tuesday;
+            if (z == 3) return DaysOfWeek.Wednesday;
+            if (z == 4) return DaysOfWeek.Thursday;
+            if (z == 5) return DaysOfWeek.Friday;
+            if (z == 6) return DaysOfWeek.Saturday;
+
+            throw new InvalidOperationException("Can only create a DayOfWeek enum value from integers of the range 0-6 inclusive. ");
+        }
     }
 }

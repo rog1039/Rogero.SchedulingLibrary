@@ -16,6 +16,9 @@ namespace Rogero.SchedulingLibrary
         MTWTF = Monday | Tuesday | Wednesday | Thursday | Friday,
         SMTWT = Sunday | Monday | Tuesday | Wednesday | Thursday,
         TWTFS = Tuesday | Wednesday | Thursday | Friday | Saturday,
-        Weekdays = MTWTF
+        Weekdays = MTWTF,
+        Weekends = Sunday | Saturday,
+        AllDays = Weekdays | Weekends,
+        Everyday = AllDays
     }
 }
